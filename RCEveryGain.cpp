@@ -7,6 +7,20 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 {
   GetParam(kShiftMacro)->InitInt("Macro Shift", 0, -8, 8, "Bit");
   GetParam(kShiftMicro)->InitDouble("Micro Shift", 0., -100.0, 100.0, 0.01, "%");
+  GetParam(kShiftSize)->InitDouble("Shift Size", 1.0, 0.25, 3.0, 0.25, "");
+  GetParam(kFader)->InitDouble("Fader", 100., 0., 100.0, 0.0001, "%");
+  GetParam(kFaderCurve)->InitDouble("Fader Curve", 2., 0., 10.0, 0.1, "");
+  GetParam(kFaderSmoothing)->InitDouble("Fader Smoothing", 2., 0., 10.0, 0.1, "");
+  GetParam(kGainMaster)->InitDouble("Master Gain", 0., -60., 60.0, 0.1, "dB");
+  GetParam(kGainLeft)->InitDouble("Left Gain", 0., -60., 60.0, 0.1, "dB");
+  GetParam(kGainRight)->InitDouble("Right Gain", 0., -60., 60.0, 0.1, "dB");
+  GetParam(kGainCenter)->InitDouble("Center Gain", 0., -60., 60.0, 0.1, "dB");
+  GetParam(kGainSide)->InitDouble("Side Gain", 0., -60., 60.0, 0.1, "dB");
+  GetParam(kTrimMaster)->InitDouble("Master Trim", 0., -6., 6.0, 0.000001, "dB");
+  GetParam(kTrimLeft)->InitDouble("Left Trim", 0., -6., 6.0, 0.000001, "dB");
+  GetParam(kTrimRight)->InitDouble("Right Trim", 0., -6., 6.0, 0.000001, "dB");
+  GetParam(kTrimCenter)->InitDouble("Center Trim", 0., -6., 6.0, 0.000001, "dB");
+  GetParam(kTrimSide)->InitDouble("Side Trim", 0., -6., 6.0, 0.000001, "dB");
 
 #if IPLUG_EDITOR // http://bit.ly/2S64BDd
   mMakeGraphicsFunc = [&]() {

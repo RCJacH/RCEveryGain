@@ -9,7 +9,7 @@ enum EParams
   kShiftMacro = 0,
   kShiftMicro,
   kShiftSize,
-  kFaderFader,
+  kFader,
   kFaderCurve,
   kFaderSmoothing,
   kGainMaster,
