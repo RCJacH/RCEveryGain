@@ -15,12 +15,12 @@ enum EParams
   kGainMaster,
   kGainLeft,
   kGainRight,
-  kGainCenter,
+  kGainMid,
   kGainSide,
   kTrimMaster,
   kTrimLeft,
   kTrimRight,
-  kTrimCenter,
+  kTrimMid,
   kTrimSide,
   kNumParams
 };
@@ -32,6 +32,7 @@ class RCEveryGain final : public Plugin
 {
 public:
   RCEveryGain(const InstanceInfo& info);
+  double fader_amp;
 
 #if IPLUG_DSP // http://bit.ly/2S64BDd
   void ProcessBlock(sample** inputs, sample** outputs, int nFrames) override;
