@@ -5,6 +5,8 @@
 RCEveryGain::RCEveryGain(const InstanceInfo& info)
 : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
 {
+  fader_amp = 0.0;
+
   GetParam(kShiftMacro)->InitInt("Macro Shift", 0, -8, 8, "Bit");
   GetParam(kShiftMicro)->InitDouble("Micro Shift", 0., -100.0, 100.0, 0.01, "%");
   GetParam(kShiftSize)->InitDouble("Shift Size", 1.0, 0.25, 3.0, 0.25, "");
