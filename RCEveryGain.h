@@ -6,7 +6,22 @@ const int kNumPresets = 1;
 
 enum EParams
 {
-  kGain = 0,
+  kShiftMacro = 0,
+  kShiftMicro,
+  kShiftSize,
+  kFaderFader,
+  kFaderCurve,
+  kFaderSmoothing,
+  kGainMaster,
+  kGainLeft,
+  kGainRight,
+  kGainCenter,
+  kGainSide,
+  kTrimMaster,
+  kTrimLeft,
+  kTrimRight,
+  kTrimCenter,
+  kTrimSide,
   kNumParams
 };
 
