@@ -6,7 +6,10 @@
 	],
 	"settings": {
 		"files.associations": {
-			"algorithm": "cpp"
+			"algorithm": "cpp",
+			"filesystem": "cpp",
+			"format": "cpp",
+			"xstring": "cpp"
 		}
 	}
 }
