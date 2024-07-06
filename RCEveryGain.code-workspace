@@ -9,7 +9,8 @@
 			"algorithm": "cpp",
 			"filesystem": "cpp",
 			"format": "cpp",
-			"xstring": "cpp"
+			"xstring": "cpp",
+			"cmath": "cpp"
 		}
 	}
 }

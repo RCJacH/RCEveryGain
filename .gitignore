@@ -18,6 +18,8 @@
 build-*
 ipch/*
 gui/*
+REAPER/
+*.RPP-bak
 
 Icon?
 .DS_Stor*
