@@ -49,6 +49,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
 
     const IVStyle meter_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(20.0).WithFGColor(COLOR_WHITE))
+                                  .WithShowLabel(false)
                                   .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
                                   .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
     pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input, "Inputs", meter_style), kCtrlTagInputMeter);
@@ -68,11 +69,13 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE));
 
-    pGraphics->AttachControl(new ITextControl(IRECT(100.0, 56.0, 124.0, 72.0), "S", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(IRECT(100.0, 72.0, 124.0, 88.0), "H", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(IRECT(100.0, 88.0, 124.0, 104.0), "I", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(IRECT(100.0, 104.0, 124.0, 120.0), "F", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(IRECT(100.0, 120.0, 124.0, 136.0), "T", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
+    const std::string shift_section_title = "SHIFT";
+    for (std::string::size_type i = 0; i < shift_section_title.size(); i++)
+    {
+      char c = shift_section_title[i];
+      pGraphics->AttachControl(new ITextControl(shift_header.SubRectVertical(5, i), &c, IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
+    }
+
     pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
