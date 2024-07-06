@@ -44,6 +44,7 @@ public:
 
 #if IPLUG_DSP // http://bit.ly/2S64BDd
 
+  void OnParamChange(int idx) override;
   void OnIdle() override;
   void ProcessBlock(sample** inputs, sample** outputs, int nFrames) override;
   void OnReset() override;
@@ -54,4 +55,5 @@ public:
 
 private:
   double fader_amp;
+  double shift_size;
 };

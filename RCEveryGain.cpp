@@ -2,6 +2,8 @@
 #include "IControls.h"
 #include "IPlug_include_in_plug_src.h"
 
+double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
+
 RCEveryGain::RCEveryGain(const InstanceInfo& info)
   : iplug::Plugin(info, MakeConfig(kNumParams, kNumPresets))
 {
@@ -9,7 +11,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
   GetParam(kShiftMacro)->InitInt("Macro Shift", 0, -8, 8, "Bit");
   GetParam(kShiftMicro)->InitDouble("Micro Shift", 0., -100.0, 100.0, 0.01, "%");
-  GetParam(kShiftSize)->InitDouble("Shift Size", 1.0, 0.25, 3.0, 0.25, "");
+  GetParam(kShiftSize)->InitEnum("Shift Size", 3, {"0.25", "0.5", "0.75", "1.0", "1.25", "1.5", "1.75", "2.0", "2.5", "3.0"});
   GetParam(kFader)->InitDouble("Fader", 100., 0., 100.0, 0.0001, "%");
   GetParam(kFaderCurve)->InitDouble("Fader Curve", 2., 0., 10.0, 0.1, "");
   GetParam(kFaderSmoothing)->InitDouble("Fader Smoothing", 2., 0., 10.0, 0.1, "");
@@ -79,6 +81,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
+    // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_macro_style.WithValueText(DEFAULT_VALUE_TEXT)));
     pGraphics->AttachControl(new ITextControl(shift_label_macro, "MACRO", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(shift_label_micro, "MICRO", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(shift_label_size, "SIZE", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
@@ -144,6 +147,15 @@ void RCEveryGain::OnIdle()
   mOutputPeakSender.TransmitData(*this);
 }
 
+void RCEveryGain::OnParamChange(int idx)
+{
+  auto value = GetParam(idx)->Value();
+  if (idx == kShiftSize)
+  {
+    shift_size = shift_sizes[(int)value];
+  }
+}
+
 void RCEveryGain::OnReset()
 {
   mInputPeakSender.Reset(GetSampleRate());
@@ -154,7 +166,6 @@ void RCEveryGain::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
 {
   const double macro_shift = GetParam(kShiftMacro)->Value();
   const double micro_shift = GetParam(kShiftMicro)->Value() / 100;
-  const double shift_size = GetParam(kShiftSize)->Value();
   const double fader_pct = GetParam(kFader)->Value() / 100;
   const double fader_curve = GetParam(kFaderCurve)->Value();
   const double fader_smoothing = GetParam(kFaderCurve)->Value() * 400.0;
