@@ -43,8 +43,8 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT header = upper.GetReducedFromBottom(shift.H());
     const IRECT volume = lower.FracRectHorizontal(0.618, true);
     const IRECT fader = lower.GetReducedFromRight(volume.W());
-    const IRECT gain = volume.FracRectVertical(0.5, true);
-    const IRECT trim = volume.FracRectVertical(0.5);
+    const IRECT gain = volume.SubRectVertical(2, 0);
+    const IRECT trim = volume.SubRectVertical(2, 1);
 
     pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
 
@@ -57,12 +57,12 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_header = shift_inner.GetFromLeft(24.0);
     const IRECT shift_labels = shift_inner.FracRectHorizontal(0.1, true);
     const IRECT shift_controls = shift_inner.GetReducedFromLeft(shift_header.W()).GetReducedFromRight(shift_labels.W());
-    const IRECT shift_control_macro = shift_controls.FracRectVertical(1. / 3., true);
-    const IRECT shift_control_micro = shift_controls.GetReducedFromTop(shift_control_macro.H()).FracRectVertical(0.5, true);
-    const IRECT shift_control_size = shift_controls.FracRectVertical(1. / 3.);
-    const IRECT shift_label_macro = shift_labels.FracRectVertical(1. / 3., true);
-    const IRECT shift_label_micro = shift_labels.GetReducedFromTop(shift_label_macro.H()).FracRectVertical(0.5, true);
-    const IRECT shift_label_size = shift_labels.FracRectVertical(1. / 3.);
+    const IRECT shift_control_macro = shift_controls.SubRectVertical(3, 0);
+    const IRECT shift_control_micro = shift_controls.SubRectVertical(3, 1);
+    const IRECT shift_control_size = shift_controls.SubRectVertical(3, 2);
+    const IRECT shift_label_macro = shift_labels.SubRectVertical(3, 0);
+    const IRECT shift_label_micro = shift_labels.SubRectVertical(3, 1);
+    const IRECT shift_label_size = shift_labels.SubRectVertical(3, 2);
 
     const IVStyle shift_macro_style = IVStyle::IVStyle().WithShowLabel(false).WithShowValue(true).WithRoundness(0.0);
 
@@ -96,14 +96,12 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // Gain Section
 
     const IRECT gain_inner = gain.GetHPadded(-4.);
-    const IRECT gain_top_row = gain_inner.FracRectVertical(0.5, true);
-    const IRECT gain_bottom_row = gain_inner.FracRectVertical(0.5);
-    const IRECT gain_label = gain_top_row.FracRectHorizontal(1. / 3.);
-    const IRECT gain_mid = gain_top_row.GetReducedFromLeft(gain_label.W()).FracRectHorizontal(0.5);
-    const IRECT gain_side = gain_top_row.FracRectHorizontal(1. / 3., true);
-    const IRECT gain_left = gain_bottom_row.FracRectHorizontal(1. / 3.);
-    const IRECT gain_master = gain_bottom_row.GetReducedFromLeft(gain_left.W()).FracRectHorizontal(0.5);
-    const IRECT gain_right = gain_bottom_row.FracRectHorizontal(1. / 3., true);
+    const IRECT gain_label = gain_inner.GetGridCell(0, 2, 3);
+    const IRECT gain_mid = gain_inner.GetGridCell(1, 2, 3);
+    const IRECT gain_side = gain_inner.GetGridCell(2, 2, 3);
+    const IRECT gain_left = gain_inner.GetGridCell(3, 2, 3);
+    const IRECT gain_master = gain_inner.GetGridCell(4, 2, 3);
+    const IRECT gain_right = gain_inner.GetGridCell(5, 2, 3);
 
     const IVStyle gain_style = IVStyle::IVStyle();
 
@@ -117,14 +115,12 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // Trim Section
 
     const IRECT trim_inner = trim.GetHPadded(-4.);
-    const IRECT trim_top_row = trim_inner.FracRectVertical(0.5, true);
-    const IRECT trim_bottom_row = trim_inner.FracRectVertical(0.5);
-    const IRECT trim_side = trim_top_row.FracRectHorizontal(1. / 3.);
-    const IRECT trim_mid = trim_top_row.GetReducedFromLeft(trim_side.W()).FracRectHorizontal(0.5);
-    const IRECT trim_label = trim_top_row.FracRectHorizontal(1. / 3., true);
-    const IRECT trim_left = trim_bottom_row.FracRectHorizontal(1. / 3.);
-    const IRECT trim_master = trim_bottom_row.GetReducedFromLeft(trim_left.W()).FracRectHorizontal(0.5);
-    const IRECT trim_right = trim_bottom_row.FracRectHorizontal(1. / 3., true);
+    const IRECT trim_side = trim_inner.GetGridCell(0, 2, 3);
+    const IRECT trim_mid = trim_inner.GetGridCell(1, 2, 3);
+    const IRECT trim_label = trim_inner.GetGridCell(2, 2, 3);
+    const IRECT trim_left = trim_inner.GetGridCell(3, 2, 3);
+    const IRECT trim_master = trim_inner.GetGridCell(4, 2, 3);
+    const IRECT trim_right = trim_inner.GetGridCell(5, 2, 3);
 
     const IVStyle trim_style = IVStyle::IVStyle();
 
