@@ -36,7 +36,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // General Layout
     const IRECT left_input = b.FracRectHorizontal(0.141);
     const IRECT right_output = b.FracRectHorizontal(0.141, true);
-    const IRECT center = b.GetMidHPadded(300);
+    const IRECT center = b.GetReducedFromLeft(left_input.W()).GetReducedFromRight(right_output.W());
     const IRECT upper = center.FracRectVertical(0.618 * 0.382, true);
     const IRECT lower = center.GetReducedFromTop(upper.H());
     const IRECT shift = upper.FracRectVertical(0.618);
