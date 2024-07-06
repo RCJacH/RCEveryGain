@@ -34,6 +34,8 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT b = pGraphics->GetBounds();
 
     // General Layout
+    const IRECT left_input = b.FracRectHorizontal(0.141);
+    const IRECT right_output = b.FracRectHorizontal(0.141, true);
     const IRECT center = b.GetMidHPadded(300);
     const IRECT upper = center.FracRectVertical(0.618 * 0.382, true);
     const IRECT lower = center.GetReducedFromTop(upper.H());
@@ -43,6 +45,10 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT fader = lower.GetReducedFromRight(volume.W());
     const IRECT gain = volume.FracRectVertical(0.5, true);
     const IRECT trim = volume.FracRectVertical(0.5);
+
+    const IVStyle meterStyle = DEFAULT_STYLE.WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
+    pGraphics->AttachControl(new IVMeterControl<2>(left_input, "Inputs", meterStyle), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new IVMeterControl<2>(right_output, "Inputs", meterStyle), kCtrlTagOutputMeter);
 
     // Shift Section
     const IRECT shift_inner = shift.GetPadded(-4.0);
@@ -85,8 +91,6 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new ITextControl(fader_header, "FADER", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve, "Curve", fader_knob_style));
     pGraphics->AttachControl(new IVKnobControl(fader_smooth.GetPadded(-4.), kFaderSmoothing, "Smooth", fader_knob_style));
-
-
 
     // Gain Section
 
@@ -134,6 +138,18 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 }
 
 #if IPLUG_DSP
+void RCEveryGain::OnIdle()
+{
+  mInputPeakSender.TransmitData(*this);
+  mOutputPeakSender.TransmitData(*this);
+}
+
+void RCEveryGain::OnReset()
+{
+  mInputPeakSender.Reset(GetSampleRate());
+  mOutputPeakSender.Reset(GetSampleRate());
+}
+
 void RCEveryGain::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
 {
   const double macro_shift = GetParam(kShiftMacro)->Value();
@@ -162,8 +178,6 @@ void RCEveryGain::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
   double mid_amp = DBToAmp(gain_mid) * DBToAmp(trim_mid);
   double side_amp = DBToAmp(gain_side) * DBToAmp(trim_side);
 
-  const int nChans = NOutChansConnected();
-
   for (int s = 0; s < nFrames; s++)
   {
     fader_amp = ((fader_amp * fader_smoothing) + fader_target) * fader_smoothing_inv;
@@ -178,5 +192,8 @@ void RCEveryGain::ProcessBlock(sample** inputs, sample** outputs, int nFrames)
     outputs[0][s] = (center + side) * gain * left_amp;
     outputs[1][s] = (center - side) * gain * right_amp;
   }
+
+  mInputPeakSender.ProcessBlock(inputs, nFrames, kCtrlTagInputMeter, 2, 0);
+  mOutputPeakSender.ProcessBlock(outputs, nFrames, kCtrlTagOutputMeter, 2, 0);
 }
 #endif
