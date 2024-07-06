@@ -48,9 +48,11 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
 
-    const IVStyle meterStyle = DEFAULT_STYLE.WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input, "Inputs", meterStyle), kCtrlTagInputMeter);
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(right_output, "Outputs", meterStyle), kCtrlTagOutputMeter);
+    const IVStyle meter_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(20.0).WithFGColor(COLOR_WHITE))
+                                  .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
+                                  .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input, "Inputs", meter_style), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(right_output, "Outputs", meter_style), kCtrlTagOutputMeter);
 
     // Shift Section
     const IRECT shift_inner = shift.GetPadded(-4.0);
@@ -64,7 +66,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_label_micro = shift_labels.SubRectVertical(3, 1);
     const IRECT shift_label_size = shift_labels.SubRectVertical(3, 2);
 
-    const IVStyle shift_macro_style = IVStyle::IVStyle().WithShowLabel(false).WithShowValue(true).WithRoundness(0.0);
+    const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE));
 
     pGraphics->AttachControl(new ITextControl(IRECT(100.0, 56.0, 124.0, 72.0), "S", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(IRECT(100.0, 72.0, 124.0, 88.0), "H", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
@@ -87,7 +89,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
     const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
 
-    const IVStyle fader_knob_style = IVStyle::IVStyle();
+    const IVStyle fader_knob_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
     pGraphics->AttachControl(new IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical));
     pGraphics->AttachControl(new ITextControl(fader_header, "FADER", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve, "Curve", fader_knob_style));
@@ -103,8 +105,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT gain_master = gain_inner.GetGridCell(4, 2, 3);
     const IRECT gain_right = gain_inner.GetGridCell(5, 2, 3);
 
-    const IVStyle gain_style = IVStyle::IVStyle();
-
+    const IVStyle gain_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
     pGraphics->AttachControl(new ITextControl(gain_label.GetPadded(-8.), "GAIN", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new IVKnobControl(gain_mid.GetPadded(-8.), kGainMid, "", gain_style));
     pGraphics->AttachControl(new IVKnobControl(gain_side.GetPadded(-8.), kGainSide, "", gain_style));
@@ -122,8 +123,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT trim_master = trim_inner.GetGridCell(4, 2, 3);
     const IRECT trim_right = trim_inner.GetGridCell(5, 2, 3);
 
-    const IVStyle trim_style = IVStyle::IVStyle();
-
+    const IVStyle trim_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
     pGraphics->AttachControl(new ITextControl(trim_label.GetPadded(-8.), "TRIM", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new IVKnobControl(trim_mid.GetPadded(-8.), kTrimMid, "", trim_style));
     pGraphics->AttachControl(new IVKnobControl(trim_master.GetPadded(-8.), kTrimMaster, "", trim_style));
