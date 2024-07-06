@@ -48,8 +48,8 @@ public:
   void ProcessBlock(sample** inputs, sample** outputs, int nFrames) override;
   void OnReset() override;
 
-  IPeakSender<2> mInputPeakSender;
-  IPeakSender<2> mOutputPeakSender;
+  IPeakAvgSender<2> mInputPeakSender;
+  IPeakAvgSender<2> mOutputPeakSender;
 #endif
 
 private:
