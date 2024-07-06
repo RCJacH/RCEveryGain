@@ -52,8 +52,8 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
                                   .WithShowLabel(false)
                                   .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
                                   .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input, "Inputs", meter_style), kCtrlTagInputMeter);
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(right_output, "Outputs", meter_style), kCtrlTagOutputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input.GetHPadded(-16.).GetVPadded(-8.), "Inputs", meter_style), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(right_output.GetHPadded(-16.).GetVPadded(-8.), "Outputs", meter_style), kCtrlTagOutputMeter);
 
     // Shift Section
     const IRECT shift_inner = shift.GetPadded(-4.0);
