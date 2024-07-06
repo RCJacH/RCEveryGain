@@ -46,6 +46,8 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT gain = volume.FracRectVertical(0.5, true);
     const IRECT trim = volume.FracRectVertical(0.5);
 
+    pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
+
     const IVStyle meterStyle = DEFAULT_STYLE.WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
     pGraphics->AttachControl(new IVMeterControl<2>(left_input, "Inputs", meterStyle), kCtrlTagInputMeter);
     pGraphics->AttachControl(new IVMeterControl<2>(right_output, "Inputs", meterStyle), kCtrlTagOutputMeter);
@@ -64,7 +66,6 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     const IVStyle shift_macro_style = IVStyle::IVStyle().WithShowLabel(false).WithShowValue(true).WithRoundness(0.0);
 
-    pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(IRECT(100.0, 56.0, 124.0, 72.0), "S", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(IRECT(100.0, 72.0, 124.0, 88.0), "H", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(IRECT(100.0, 88.0, 124.0, 104.0), "I", IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
