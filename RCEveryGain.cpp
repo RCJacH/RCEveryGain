@@ -71,6 +71,23 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new ITextControl(shift_label_micro, "MICRO", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
     pGraphics->AttachControl(new ITextControl(shift_label_size, "SIZE", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
 
+    // Fader Section
+    const IRECT fader_inner = fader.GetPadded(-4.0);
+    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382);
+    const IRECT fader_fader = fader_inner.GetReducedFromLeft(fader_non_fader.W());
+    const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
+    const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
+    const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
+    const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
+
+    const IVStyle fader_knob_style = IVStyle::IVStyle();
+    pGraphics->AttachControl(new IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical));
+    pGraphics->AttachControl(new ITextControl(fader_header, "FADER", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
+    pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve, "Curve", fader_knob_style));
+    pGraphics->AttachControl(new IVKnobControl(fader_smooth.GetPadded(-4.), kFaderSmoothing, "Smooth", fader_knob_style));
+
+
+
     // Gain Section
 
     const IRECT gain_inner = gain.GetHPadded(-4.);
