@@ -1,6 +1,7 @@
 #include "RCEveryGain.h"
 #include "IControls.h"
 #include "IPlug_include_in_plug_src.h"
+#include "Widgets/SVGTabSwitchControl.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
 
