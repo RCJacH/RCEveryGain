@@ -31,111 +31,109 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
   mLayoutFunc = [&](IGraphics* pGraphics) {
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
-    pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
+    // pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
     const IRECT b = pGraphics->GetBounds();
+    const IBitmap backgroundBitmap = pGraphics->LoadBitmap(PNGBACKGROUND_FN);
+    pGraphics->AttachBackground(PNGBACKGROUND_FN);
+
 
     // General Layout
-    const IRECT left_input = b.FracRectHorizontal(0.141);
-    const IRECT right_output = b.FracRectHorizontal(0.141, true);
-    const IRECT center = b.GetReducedFromLeft(left_input.W()).GetReducedFromRight(right_output.W());
-    const IRECT upper = center.FracRectVertical(0.618 * 0.382, true);
-    const IRECT lower = center.GetReducedFromTop(upper.H());
-    const IRECT shift = upper.FracRectVertical(0.618);
-    const IRECT header = upper.GetReducedFromBottom(shift.H());
-    const IRECT volume = lower.FracRectHorizontal(0.618, true);
+    const IRECT content = b.GetPadded(-8.f);
+    const IRECT header = content.FracRectVertical(0.382f * 0.2f, true);
+    const IRECT controls = content.FracRectHorizontal(0.618f + 0.382f * 0.382f).GetReducedFromTop(header.H());
+    const IRECT meter = content.GetReducedFromTop(header.H()).GetReducedFromLeft(controls.W());
+    const IRECT shift = controls.FracRectVertical(0.3f, true);
+    const IRECT lower = controls.GetReducedFromTop(shift.H());
+    const IRECT volume = lower.FracRectHorizontal(0.618f, true);
     const IRECT fader = lower.GetReducedFromRight(volume.W());
     const IRECT gain = volume.SubRectVertical(2, 0);
     const IRECT trim = volume.SubRectVertical(2, 1);
 
-    pGraphics->AttachControl(new ITextControl(header, "RCEveryGain", IText(40.0, COLOR_WHITE), COLOR_TRANSPARENT));
 
+    const IRECT meter_screens = meter.GetPadded(-4.f - 12.f * 1.5f).GetReducedFromBottom(24.f).GetReducedFromLeft(2.f);
+    const IRECT input_meter = meter_screens.GetReducedFromRight((meter_screens.W() * .5f) - 4.f);
+    const IRECT output_meter = meter_screens.GetReducedFromLeft((meter_screens.W() * .5f) - 4.f);
     const IVStyle meter_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(20.0).WithFGColor(COLOR_WHITE))
                                   .WithShowLabel(false)
                                   .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
                                   .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(left_input.GetHPadded(-16.).GetVPadded(-8.), "Inputs", meter_style), kCtrlTagInputMeter);
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(right_output.GetHPadded(-16.).GetVPadded(-8.), "Outputs", meter_style), kCtrlTagOutputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(input_meter, "Inputs", meter_style), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(output_meter, "Outputs", meter_style), kCtrlTagOutputMeter);
 
     // Shift Section
-    const IRECT shift_inner = shift.GetPadded(-4.0);
-    const IRECT shift_header = shift_inner.GetFromLeft(24.0);
-    const IRECT shift_labels = shift_inner.FracRectHorizontal(0.1, true);
-    const IRECT shift_controls = shift_inner.GetReducedFromLeft(shift_header.W()).GetReducedFromRight(shift_labels.W());
-    const IRECT shift_control_macro = shift_controls.SubRectVertical(3, 0);
-    const IRECT shift_control_micro = shift_controls.SubRectVertical(3, 1);
-    const IRECT shift_control_size = shift_controls.SubRectVertical(3, 2);
-    const IRECT shift_label_macro = shift_labels.SubRectVertical(3, 0);
-    const IRECT shift_label_micro = shift_labels.SubRectVertical(3, 1);
-    const IRECT shift_label_size = shift_labels.SubRectVertical(3, 2);
+    const IRECT shift_inner = shift.GetReducedFromLeft(24.f).GetVPadded(-6.f - 6.f * 1.6f);
+    const IRECT shift_lane_macro = shift_inner.SubRectVertical(3, 0).GetReducedFromBottom(4.f);
+    const IRECT shift_lane_micro = shift_inner.SubRectVertical(3, 1).GetVPadded(-4.f);
+    const IRECT shift_lane_size = shift_inner.SubRectVertical(3, 2).GetReducedFromTop(4.f);
+    const IRECT shift_control_macro = shift_lane_macro.FracRectHorizontal(.88f);
+    const IRECT shift_control_micro = shift_lane_micro.FracRectHorizontal(.8f);
+    const IRECT shift_control_size = shift_lane_size.FracRectHorizontal(.88f);
+    const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.2f, true);
 
     const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE));
 
-    const std::string shift_section_title = "SHIFT";
-    for (std::string::size_type i = 0; i < shift_section_title.size(); i++)
-    {
-      char c = shift_section_title[i];
-      pGraphics->AttachControl(new ITextControl(shift_header.SubRectVertical(5, i), &c, IText(20.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    }
+    // pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
+    // pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
+    // pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
 
-    pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-    pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-    pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-    // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_macro_style.WithValueText(DEFAULT_VALUE_TEXT)));
-    pGraphics->AttachControl(new ITextControl(shift_label_macro, "MACRO", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(shift_label_micro, "MICRO", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new ITextControl(shift_label_size, "SIZE", IText(16.0, COLOR_WHITE), COLOR_TRANSPARENT));
+    // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_size_style));
+    // auto button1action = [pGraphics](IControl* pCaller) {
+    //   SplashClickActionFunc(pCaller);
+    //   pGraphics->ShowMessageBox("Message", "Title", kMB_YESNO, [&](EMsgBoxResult result) {
+    //     WDL_String str;
+    //     str.SetFormatted(32, "%s pressed", kMessageResultStrs[result]);
+    //   });
+    // };
+    // pGraphics->AttachControl(new IVButtonControl(shift_control_macro, button1action, "", shift_size_style, false));
 
     // Fader Section
-    const IRECT fader_inner = fader.GetPadded(-4.0);
-    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382);
-    const IRECT fader_fader = fader_inner.GetReducedFromLeft(fader_non_fader.W());
-    const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
-    const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
-    const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
-    const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
+    // const IRECT fader_inner = fader.GetPadded(-4.0);
+    // const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382);
+    // const IRECT fader_fader = fader_inner.GetReducedFromLeft(fader_non_fader.W());
+    // const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
+    // const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
+    // const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
+    // const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
 
-    const IVStyle fader_knob_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
-    pGraphics->AttachControl(new IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical));
-    pGraphics->AttachControl(new ITextControl(fader_header, "FADER", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve, "Curve", fader_knob_style));
-    pGraphics->AttachControl(new IVKnobControl(fader_smooth.GetPadded(-4.), kFaderSmoothing, "Smooth", fader_knob_style));
+    // const IVStyle fader_knob_style =
+    // DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE)); pGraphics->AttachControl(new
+    // IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical)); pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve,
+    // "Curve", fader_knob_style)); pGraphics->AttachControl(new IVKnobControl(fader_smooth.GetPadded(-4.), kFaderSmoothing, "Smooth", fader_knob_style));
 
     // Gain Section
 
-    const IRECT gain_inner = gain.GetHPadded(-4.);
-    const IRECT gain_label = gain_inner.GetGridCell(0, 2, 3);
-    const IRECT gain_mid = gain_inner.GetGridCell(1, 2, 3);
-    const IRECT gain_side = gain_inner.GetGridCell(2, 2, 3);
-    const IRECT gain_left = gain_inner.GetGridCell(3, 2, 3);
-    const IRECT gain_master = gain_inner.GetGridCell(4, 2, 3);
-    const IRECT gain_right = gain_inner.GetGridCell(5, 2, 3);
+    // const IRECT gain_inner = gain.GetHPadded(-4.);
+    // const IRECT gain_label = gain_inner.GetGridCell(0, 2, 3);
+    // const IRECT gain_mid = gain_inner.GetGridCell(1, 2, 3);
+    // const IRECT gain_side = gain_inner.GetGridCell(2, 2, 3);
+    // const IRECT gain_left = gain_inner.GetGridCell(3, 2, 3);
+    // const IRECT gain_master = gain_inner.GetGridCell(4, 2, 3);
+    // const IRECT gain_right = gain_inner.GetGridCell(5, 2, 3);
 
-    const IVStyle gain_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
-    pGraphics->AttachControl(new ITextControl(gain_label.GetPadded(-8.), "GAIN", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new IVKnobControl(gain_mid.GetPadded(-8.), kGainMid, "", gain_style));
-    pGraphics->AttachControl(new IVKnobControl(gain_side.GetPadded(-8.), kGainSide, "", gain_style));
-    pGraphics->AttachControl(new IVKnobControl(gain_left.GetPadded(-8.), kGainLeft, "", gain_style));
-    pGraphics->AttachControl(new IVKnobControl(gain_master.GetPadded(-8.), kGainMaster, "", gain_style));
-    pGraphics->AttachControl(new IVKnobControl(gain_right.GetPadded(-8.), kGainRight, "", gain_style));
+    // const IVStyle gain_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
+    // pGraphics->AttachControl(new IVKnobControl(gain_mid.GetPadded(-8.), kGainMid, "", gain_style));
+    // pGraphics->AttachControl(new IVKnobControl(gain_side.GetPadded(-8.), kGainSide, "", gain_style));
+    // pGraphics->AttachControl(new IVKnobControl(gain_left.GetPadded(-8.), kGainLeft, "", gain_style));
+    // pGraphics->AttachControl(new IVKnobControl(gain_master.GetPadded(-8.), kGainMaster, "", gain_style));
+    // pGraphics->AttachControl(new IVKnobControl(gain_right.GetPadded(-8.), kGainRight, "", gain_style));
 
     // Trim Section
 
-    const IRECT trim_inner = trim.GetHPadded(-4.);
-    const IRECT trim_side = trim_inner.GetGridCell(0, 2, 3);
-    const IRECT trim_mid = trim_inner.GetGridCell(1, 2, 3);
-    const IRECT trim_label = trim_inner.GetGridCell(2, 2, 3);
-    const IRECT trim_left = trim_inner.GetGridCell(3, 2, 3);
-    const IRECT trim_master = trim_inner.GetGridCell(4, 2, 3);
-    const IRECT trim_right = trim_inner.GetGridCell(5, 2, 3);
+    // const IRECT trim_inner = trim.GetHPadded(-4.);
+    // const IRECT trim_side = trim_inner.GetGridCell(0, 2, 3);
+    // const IRECT trim_mid = trim_inner.GetGridCell(1, 2, 3);
+    // const IRECT trim_label = trim_inner.GetGridCell(2, 2, 3);
+    // const IRECT trim_left = trim_inner.GetGridCell(3, 2, 3);
+    // const IRECT trim_master = trim_inner.GetGridCell(4, 2, 3);
+    // const IRECT trim_right = trim_inner.GetGridCell(5, 2, 3);
 
-    const IVStyle trim_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
-    pGraphics->AttachControl(new ITextControl(trim_label.GetPadded(-8.), "TRIM", IText(24.0, COLOR_WHITE), COLOR_TRANSPARENT));
-    pGraphics->AttachControl(new IVKnobControl(trim_mid.GetPadded(-8.), kTrimMid, "", trim_style));
-    pGraphics->AttachControl(new IVKnobControl(trim_master.GetPadded(-8.), kTrimMaster, "", trim_style));
-    pGraphics->AttachControl(new IVKnobControl(trim_left.GetPadded(-8.), kTrimLeft, "", trim_style));
-    pGraphics->AttachControl(new IVKnobControl(trim_side.GetPadded(-8.), kTrimSide, "", trim_style));
-    pGraphics->AttachControl(new IVKnobControl(trim_right.GetPadded(-8.), kTrimRight, "", trim_style));
+    // const IVStyle trim_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
+    // pGraphics->AttachControl(new IVKnobControl(trim_mid.GetPadded(-8.), kTrimMid, "", trim_style));
+    // pGraphics->AttachControl(new IVKnobControl(trim_master.GetPadded(-8.), kTrimMaster, "", trim_style));
+    // pGraphics->AttachControl(new IVKnobControl(trim_left.GetPadded(-8.), kTrimLeft, "", trim_style));
+    // pGraphics->AttachControl(new IVKnobControl(trim_side.GetPadded(-8.), kTrimSide, "", trim_style));
+    // pGraphics->AttachControl(new IVKnobControl(trim_right.GetPadded(-8.), kTrimRight, "", trim_style));
   };
 #endif
 }
