@@ -230,30 +230,21 @@ void SVGTabSwitchControl::OnResize()
   SetTargetRECT(MakeRects(mRECT));
 
   mButtons.Resize(0);
+  float total_gap_size = mGap * (mNumStates - 1);
+  float total_size = (mDirection == EDirection::Horizontal) ? mWidgetBounds.W() : mWidgetBounds.H();
+  float button_size = (total_size - total_gap_size) / mNumStates;
 
   for (int i = 0; i < mNumStates; i++)
   {
-    IRECT buttonBound = mWidgetBounds.SubRect(mDirection, mNumStates, i);
-    float half_gap = mGap * .5f;
-    if (mGap)
-    {
-      if (mDirection == EDirection::Horizontal)
-        if (i == 0)
-          buttonBound.ReduceFromRight(half_gap);
-        else if (i == mNumStates - 1)
-          buttonBound.ReduceFromLeft(half_gap);
-        else
-          buttonBound.HPad(-mGap);
-    }
+    IRECT buttonBound;
+    float reduce_before = button_size * i + mGap * i;
+    float n_remaining = mNumStates - i - 1;
+    float reduce_after = button_size * n_remaining + mGap * n_remaining;
+    if (mDirection == EDirection::Horizontal)
+      buttonBound = mWidgetBounds.GetReducedFromLeft(reduce_before).GetReducedFromRight(reduce_after);
     else
-    {
-      if (i == 0)
-        buttonBound.ReduceFromBottom(half_gap);
-      else if (i == mNumStates - 1)
-        buttonBound.ReduceFromTop(half_gap);
-      else
-        buttonBound.VPad(mGap);
-    }
+      buttonBound = mWidgetBounds.GetReducedFromTop(reduce_before).GetReducedFromBottom(reduce_after);
+
     mButtons.Add(buttonBound);
   }
 
