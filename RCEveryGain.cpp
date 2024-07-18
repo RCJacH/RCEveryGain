@@ -78,6 +78,10 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     // pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
 
+    const IVStyle shift_size_style = DEFAULT_STYLE.WithShowLabel(false);
+    const ISVG switchOnSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHON_FN);
+    const ISVG switchOffSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHOFF_FN);
+    pGraphics->AttachControl(new SVGTabSwitchControl(shift_control_size, kShiftSize, switchOffSVG, switchOnSVG, {}, "", 4.f, shift_size_style));
     // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_size_style));
     // auto button1action = [pGraphics](IControl* pCaller) {
     //   SplashClickActionFunc(pCaller);

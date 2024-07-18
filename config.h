@@ -48,7 +48,7 @@
 #define CLAP_MANUAL_URL "https://iplug2.github.io/manuals/example_manual.pdf"
 #define CLAP_SUPPORT_URL "https://github.com/iPlug2/iPlug2/wiki"
 #define CLAP_DESCRIPTION "A simple audio effect for modifying gain"
-#define CLAP_FEATURES "audio-effect"//, "utility"
+#define CLAP_FEATURES "audio-effect" //, "utility"
 
 #define APP_NUM_CHANNELS 2
 #define APP_N_VECTOR_WAIT 0
@@ -59,3 +59,5 @@
 #define ROBOTO_FN "Roboto-Regular.ttf"
 #define PNGBACKGROUND_FN "bg.png"
 #define PNGBACKGROUND_2X_FN "bg@2x.png"
+#define SVGSHIFTSIZESWITCHON_FN "shift_size_switch_on.svg"
+#define SVGSHIFTSIZESWITCHOFF_FN "shift_size_switch_off.svg"
