@@ -238,7 +238,7 @@ void SVGTabSwitchControl::OnResize()
   {
     IRECT buttonBound;
     float reduce_before = button_size * i + mGap * i;
-    float n_remaining = mNumStates - i - 1;
+    int n_remaining = mNumStates - i - 1;
     float reduce_after = button_size * n_remaining + mGap * n_remaining;
     if (mDirection == EDirection::Horizontal)
       buttonBound = mWidgetBounds.GetReducedFromLeft(reduce_before).GetReducedFromRight(reduce_after);
