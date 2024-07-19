@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-     width="100mm" height="100mm" viewBox="0 0 100 100">
-     <rect x="0" y="0" width="100%" height="100%" rx="8" ry="8" stroke="black" strokeWidth="4" fill="red"/>
+     width="100" height="100" viewBox="0 0 100 100">
+<defs>
+<filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB" id="d0">
+<feGaussianBlur stdDeviation="1" x="0%" y="0%" width="100%" height="100%" in="SourceAlpha" result="blur"></feGaussianBlur>
+</filter>
+<linearGradient x1="92" y1="83.0" x2="10" y2="85.0" gradientUnits="userSpaceOnUse" id="d1">
+<stop offset="0%" stop-color="#e2e4de" />
+<stop offset="100%" stop-color="#b3b5ae" />
+</linearGradient>
+<radialGradient cx="51.0" cy="45.0" r="64.28388351678825" gradientUnits="userSpaceOnUse" id="d2">
+<stop offset="20%" stop-color="#efece0" />
+<stop offset="100%" stop-color="#ede7cf" />
+</radialGradient>
+<linearGradient x1="92" y1="19.0" x2="10" y2="83.0" gradientUnits="userSpaceOnUse" id="d3">
+<stop offset="10%" stop-color="#f9f9f8" stop-opacity="0.6" />
+<stop offset="60%" stop-color="#ede7cf" stop-opacity="0" />
+</linearGradient>
+</defs>
+<rect x="9" y="21.0" width="84" height="65" rx="4" ry="4" stroke="#151514" stroke-width="2" />
+<path d="M92,85.0 l-1,0 q-4,4,-4,4 h-76.5 q-4,0,-4,-4 l1,-59.5 L11,19.0 l79,56.0" fill="black" filter="url(#d0)" opacity="0.8" />
+<rect x="10" y="21.0" width="82" height="64" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d1)" />
+<rect x="10.0" y="19.0" width="82.0" height="80.0" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d2)" transform="scale(1, 0.81)" />
+<rect x="10.0" y="19.0" width="82.0" height="80.0" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d3)" transform="scale(1, 0.81)" />
 </svg>
