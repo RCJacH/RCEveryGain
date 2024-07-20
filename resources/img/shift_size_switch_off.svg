@@ -5,22 +5,22 @@
 <filter x="-50%" y="-50%" width="200%" height="200%" filterUnits="objectBoundingBox" primitiveUnits="userSpaceOnUse" color-interpolation-filters="sRGB" id="d0">
 <feGaussianBlur stdDeviation="1" x="0%" y="0%" width="100%" height="100%" in="SourceAlpha" result="blur"></feGaussianBlur>
 </filter>
-<linearGradient x1="92" y1="69.0" x2="10" y2="85.0" gradientUnits="userSpaceOnUse" id="d1">
-<stop offset="0%" stop-color="#c2c3bf" />
-<stop offset="100%" stop-color="#969793" />
+<linearGradient x1="92" y1="69.0" x2="10" y2="81.0" gradientUnits="userSpaceOnUse" id="d1">
+<stop offset="0%" stop-color="#aeb0a9" />
+<stop offset="100%" stop-color="#848580" />
 </linearGradient>
-<radialGradient cx="51.0" cy="45.0" r="64.28388351678825" gradientUnits="userSpaceOnUse" id="d2">
-<stop offset="20%" stop-color="#d5d2c8" />
-<stop offset="100%" stop-color="#c7c1ad" />
+<radialGradient cx="51.0" cy="37.0" r="50%" gradientUnits="userSpaceOnUse" id="d2">
+<stop offset="20%" stop-color="#c7c3b6" />
+<stop offset="100%" stop-color="#b5ad92" />
 </radialGradient>
 <linearGradient x1="92" y1="5.0" x2="10" y2="69.0" gradientUnits="userSpaceOnUse" id="d3">
-<stop offset="10%" stop-color="#f2f2f1" stop-opacity="0.6" />
-<stop offset="60%" stop-color="#c7c1ad" stop-opacity="0" />
+<stop offset="10%" stop-color="#ededec" stop-opacity="0.6" />
+<stop offset="60%" stop-color="#b5ad92" stop-opacity="0" />
 </linearGradient>
 </defs>
-<rect x="9" y="21.0" width="84" height="65" rx="4" ry="4" stroke="#151514" stroke-width="2" />
-<path d="M92,85.0 l-3,4 q-4,4,-4,4 h-76.5 q-4,0,-4,-4 l1,-59.5 L13,5.0 l77,56.0" fill="black" filter="url(#d0)" opacity="0.8" />
-<rect x="10" y="21.0" width="82" height="64" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d1)" />
-<rect x="10.0" y="5.0" width="82.0" height="80.0" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d2)" transform="scale(1, 0.81)" />
-<rect x="10.0" y="5.0" width="82.0" height="80.0" rx="4" ry="4" stroke="#2b2926" stroke-width="2" fill="url(#d3)" transform="scale(1, 0.81)" />
+<rect x="8" y="21.0" width="86" height="66" rx="4" ry="4" stroke="#151514" stroke-width="4" fill="Transparent" />
+<path d="M92,85.0 l-6,6 a4,4,0,0,1,-4,4 h-75.5 a4,4,0,0,1,-4,-4 l0,-58.5 L11.0,7.0 v80 h78" fill="black" filter="url(#d0)" opacity="0.8" />
+<path d="M92,65.0 v16 a4,4,0,0,1,-4,4 h-74 a4,4,0,0,1,-4,-4 v-16 a4,4,0,0,0,4,4 h74 a4,4,0,0,0,4,-4 Z" stroke="#615d56" stroke-width="2" fill="url(#d1)" />
+<rect x="10" y="5.0" width="82" height="64" rx="4" ry="4" stroke="#615d56" stroke-width="2" fill="url(#d2)" opacity="0.9" />
+<rect x="10" y="5.0" width="82" height="64" rx="4" ry="4" stroke="#615d56" stroke-width="2" fill="url(#d3)" opacity="0.9" />
 </svg>

@@ -81,7 +81,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IVStyle shift_size_style = DEFAULT_STYLE.WithShowLabel(false);
     const ISVG switchOnSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHON_FN);
     const ISVG switchOffSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHOFF_FN);
-    const std::array<float, 4> shift_size_text_offset = {0.f, -8.f, 0.f, -2.f};
+    const std::array<float, 4> shift_size_text_offset = {0.f, -8.f, 0.f, 0.f};
     pGraphics->AttachControl(new SVGTabSwitchControl(shift_control_size, kShiftSize, switchOffSVG, switchOnSVG, {}, "", 0.f, shift_size_style, shift_size_text_offset));
     // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_size_style));
     // auto button1action = [pGraphics](IControl* pCaller) {
