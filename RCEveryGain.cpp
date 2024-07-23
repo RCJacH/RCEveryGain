@@ -1,6 +1,7 @@
 #include "RCEveryGain.h"
 #include "IControls.h"
 #include "IPlug_include_in_plug_src.h"
+#include "Widgets/PNGTabSwitchControl.h"
 #include "Widgets/SVGTabSwitchControl.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
@@ -71,6 +72,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_control_micro = shift_lane_micro.FracRectHorizontal(.8f);
     const IRECT shift_control_size = shift_lane_size.FracRectHorizontal(.88f);
     const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.2f, true);
+    const IRECT shift_bulbs_macro = shift_control_macro.GetHPadded(-shift_control_macro.H());
 
     const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE));
 
@@ -78,20 +80,17 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     // pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
 
-    const IVStyle shift_size_style = DEFAULT_STYLE.WithShowLabel(false);
-    const ISVG switchOnSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHON_FN);
-    const ISVG switchOffSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHOFF_FN);
+    const IVStyle shift_style = DEFAULT_STYLE.WithShowLabel(false);
+
+    const IBitmap shiftMacroSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHON_FN);
+    const IBitmap shiftMacroSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHOFF_FN);
+    const std::array<float, 4> shift_macro_text_offset = {8.f, 0.f, 8.f, 0.f};
+    pGraphics->AttachControl(new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_style, shift_macro_text_offset));
+
+    const ISVG shiftSizeSwitchOnSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHON_FN);
+    const ISVG shiftSizeSwitchOffSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHOFF_FN);
     const std::array<float, 4> shift_size_text_offset = {0.f, -8.f, 0.f, 0.f};
-    pGraphics->AttachControl(new SVGTabSwitchControl(shift_control_size, kShiftSize, switchOffSVG, switchOnSVG, {}, "", 0.f, shift_size_style, shift_size_text_offset));
-    // pGraphics->AttachControl(new IVTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_size_style));
-    // auto button1action = [pGraphics](IControl* pCaller) {
-    //   SplashClickActionFunc(pCaller);
-    //   pGraphics->ShowMessageBox("Message", "Title", kMB_YESNO, [&](EMsgBoxResult result) {
-    //     WDL_String str;
-    //     str.SetFormatted(32, "%s pressed", kMessageResultStrs[result]);
-    //   });
-    // };
-    // pGraphics->AttachControl(new IVButtonControl(shift_control_macro, button1action, "", shift_size_style, false));
+    pGraphics->AttachControl(new SVGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffSVG, shiftSizeSwitchOnSVG, {}, "", 0.f, shift_style, shift_size_text_offset));
 
     // Fader Section
     // const IRECT fader_inner = fader.GetPadded(-4.0);
