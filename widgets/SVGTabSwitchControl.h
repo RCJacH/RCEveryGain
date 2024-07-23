@@ -17,7 +17,7 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
-   * @param textOffset The styling of this vector control \see IVStyle
+   * @param textOffset The horizontal and vertical offset of the value display
    * @param direction The direction of the buttons */
   SVGTabSwitchControl(const IRECT& bounds,
                       IActionFunction aF,
@@ -39,7 +39,7 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
-   * @param textOffset The styling of this vector control \see IVStyle
+   * @param textOffset The horizontal and vertical offset of the value display
    * @param direction The direction of the buttons */
   SVGTabSwitchControl(const IRECT& bounds,
                       int paramIdx,
@@ -62,7 +62,7 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
-   * @param textOffset The styling of this vector control \see IVStyle
+   * @param textOffset The horizontal and vertical offset of the value display
    * @param direction The direction of the buttons */
   SVGTabSwitchControl(const IRECT& bounds,
                       IActionFunction aF,
@@ -86,7 +86,7 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
-   * @param textOffset The styling of this vector control \see IVStyle
+   * @param textOffset The horizontal and vertical offset of the value display
    * @param direction The direction of the buttons */
   SVGTabSwitchControl(const IRECT& bounds,
                       int paramIdx,
