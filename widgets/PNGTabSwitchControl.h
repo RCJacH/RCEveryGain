@@ -4,6 +4,13 @@
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
+/** Constants used for layout direction */
+enum class ETabSwitchHighlightMode
+{
+  Single,
+  FromCenter
+};
+
 /** A vector "tab" multi switch control. Click tabs to cycle through states. */
 class PNGTabSwitchControl : public IVTabSwitchControl
 {
@@ -17,6 +24,8 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
+   * @param textOffsets The position offsets for value texts
+   * @param hightlightMode Mode for which switches are turned on
    * @param direction The direction of the buttons */
   PNGTabSwitchControl(const IRECT& bounds,
                       IActionFunction aF,
@@ -27,6 +36,7 @@ public:
                       const float gap = 0.f,
                       const IVStyle& style = DEFAULT_STYLE,
                       const std::array<float, 4> textOffsets = defaultTextOffsets,
+                      const ETabSwitchHighlightMode hightlightMode = ETabSwitchHighlightMode::Single,
                       EDirection direction = EDirection::Horizontal);
 
   /** Constructs a vector tab switch control, linked to a parameter
@@ -38,6 +48,8 @@ public:
    * @param label The IVControl label CString
    * @param gap Distance between each button
    * @param style The styling of this vector control \see IVStyle
+   * @param textOffsets The position offsets for value texts
+   * @param hightlightMode Mode for which switches are turned on
    * @param direction The direction of the buttons */
   PNGTabSwitchControl(const IRECT& bounds,
                       int paramIdx,
@@ -48,12 +60,15 @@ public:
                       const float gap = 0.f,
                       const IVStyle& style = DEFAULT_STYLE,
                       const std::array<float, 4> textOffsets = defaultTextOffsets,
+                      const ETabSwitchHighlightMode hightlightMode = ETabSwitchHighlightMode::Single,
                       EDirection direction = EDirection::Horizontal);
 
   virtual ~PNGTabSwitchControl() {}
 
   virtual void DrawButton(IGraphics& g, const IRECT& bounds, bool pressed, bool mouseOver, ETabSegment segment, bool disabled) override;
   virtual void DrawWidget(IGraphics& g) override;
+  virtual void DrawWidgetSingle(IGraphics& g);
+  virtual void DrawWidgetFromCenter(IGraphics& g);
 
   void OnResize() override;
   void OnRescale() override
@@ -68,6 +83,7 @@ private:
 protected:
   IBitmap mOffBitmap;
   IBitmap mOnBitmap;
+  ETabSwitchHighlightMode mHighlightMode;
   float mGap;
   std::array<float, 4> mTextOffset;
 };
@@ -81,12 +97,14 @@ PNGTabSwitchControl::PNGTabSwitchControl(const IRECT& bounds,
                                          float gap,
                                          const IVStyle& style,
                                          const std::array<float, 4> textOffsets,
+                                         const ETabSwitchHighlightMode hightlightMode,
                                          EDirection direction)
   : IVTabSwitchControl(bounds, kNoParameter, options, label, style, EVShape::Rectangle, direction)
   , mOffBitmap(offBitmap)
   , mOnBitmap(onBitmap)
   , mGap(gap)
   , mTextOffset(textOffsets)
+  , mHighlightMode(hightlightMode)
 {
   AttachIControl(this, label);
   mText = style.valueText;
@@ -108,12 +126,14 @@ PNGTabSwitchControl::PNGTabSwitchControl(const IRECT& bounds,
                                          float gap,
                                          const IVStyle& style,
                                          const std::array<float, 4> textOffsets,
+                                         const ETabSwitchHighlightMode hightlightMode,
                                          EDirection direction)
   : IVTabSwitchControl(bounds, paramIdx, options, label, style, EVShape::Rectangle, direction)
   , mOffBitmap(offBitmap)
   , mOnBitmap(onBitmap)
   , mGap(gap)
   , mTextOffset(textOffsets)
+  , mHighlightMode(hightlightMode)
 {
   AttachIControl(this, label);
   mText = style.valueText;
@@ -129,6 +149,49 @@ PNGTabSwitchControl::PNGTabSwitchControl(const IRECT& bounds,
 void PNGTabSwitchControl::DrawButton(IGraphics& g, const IRECT& r, bool pressed, bool mouseOver, ETabSegment segment, bool disabled) { g.DrawFittedBitmap(pressed ? mOnBitmap : mOffBitmap, r); }
 
 void PNGTabSwitchControl::DrawWidget(IGraphics& g)
+{
+  switch (mHighlightMode)
+  {
+  case ETabSwitchHighlightMode::Single:
+    DrawWidgetSingle(g);
+    break;
+  case ETabSwitchHighlightMode::FromCenter:
+    DrawWidgetFromCenter(g);
+    break;
+  };
+}
+
+void PNGTabSwitchControl::DrawWidgetSingle(IGraphics& g)
+{
+  int selected = GetSelectedIdx();
+  ETabSegment segment = ETabSegment::Start;
+
+  for (int i = 0; i < mNumStates; i++)
+  {
+    IRECT r = mButtons.Get()[i];
+
+    if (i > 0)
+      segment = ETabSegment::Mid;
+
+    if (i == mNumStates - 1)
+      segment = ETabSegment::End;
+
+    const bool isSelected = i == selected;
+    const bool isMouseOver = mMouseOverButton == i;
+    const bool isDisabled = IsDisabled() || GetStateDisabled(i);
+
+    DrawButton(g, r, isSelected, isMouseOver, segment, isDisabled);
+
+    if (mTabLabels.Get(i))
+    {
+      float h = isSelected ? mTextOffset[2] : mTextOffset[0];
+      float v = isSelected ? mTextOffset[3] : mTextOffset[1];
+      DrawButtonText(g, r.GetOffset(h < 0.f ? h : 0.f, v < 0.f ? v : 0.f, h > 0.f ? -h : 0.f, v > 0.f ? -v : 0.f), isSelected, isMouseOver, segment, isDisabled, mTabLabels.Get(i)->Get());
+    }
+  }
+}
+
+void PNGTabSwitchControl::DrawWidgetFromCenter(IGraphics& g)
 {
   int selected = GetSelectedIdx();
   int center = mNumStates / 2;
