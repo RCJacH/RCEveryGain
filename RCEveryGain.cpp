@@ -84,13 +84,14 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     const IBitmap shiftMacroSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHON_FN);
     const IBitmap shiftMacroSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHOFF_FN);
-    const std::array<float, 4> shift_macro_text_offset = {8.f, 0.f, 8.f, 0.f};
-    pGraphics->AttachControl(new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_style, shift_macro_text_offset));
+    const std::array<float, 4> shift_macro_text_offset = {0.f, 0.f, 0.f, 0.f};
+    pGraphics->AttachControl(
+      new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_style, shift_macro_text_offset, ETabSwitchHighlightMode::FromCenter));
 
-    const ISVG shiftSizeSwitchOnSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHON_FN);
-    const ISVG shiftSizeSwitchOffSVG = pGraphics->LoadSVG(SVGSHIFTSIZESWITCHOFF_FN);
-    const std::array<float, 4> shift_size_text_offset = {0.f, -8.f, 0.f, 0.f};
-    pGraphics->AttachControl(new SVGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffSVG, shiftSizeSwitchOnSVG, {}, "", 0.f, shift_style, shift_size_text_offset));
+    const IBitmap shiftSizeSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHON_FN);
+    const IBitmap shiftSizeSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHOFF_FN);
+    const std::array<float, 4> shift_size_text_offset = {0.f, -2.f, 0.f, 0.f};
+    pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_style, shift_size_text_offset));
 
     // Fader Section
     // const IRECT fader_inner = fader.GetPadded(-4.0);

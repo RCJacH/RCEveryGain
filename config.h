@@ -61,5 +61,6 @@
 #define PNGBACKGROUND_2X_FN "bg@2x.png"
 #define PNGSHIFTMACROSWITCHON_FN "shift_macro_switch_on.png"
 #define PNGSHIFTMACROSWITCHOFF_FN "shift_macro_switch_off.png"
-#define SVGSHIFTSIZESWITCHON_FN "shift_size_switch_on.svg"
-#define SVGSHIFTSIZESWITCHOFF_FN "shift_size_switch_off.svg"
+#define PNGSHIFTSIZESWITCHON_FN "shift_size_switch_on.png"
+#define PNGSHIFTSIZESWITCHOFF_FN "shift_size_switch_off.png"
+
