@@ -59,8 +59,9 @@
 #define ROBOTO_FN "Roboto-Regular.ttf"
 #define PNGBACKGROUND_FN "bg.png"
 #define PNGBACKGROUND_2X_FN "bg@2x.png"
+#define PNGSHIFTMACROBUTTONON_FN "shift_macro_button_on.png"
+#define PNGSHIFTMACROBUTTONOFF_FN "shift_macro_button_off.png"
 #define PNGSHIFTMACROSWITCHON_FN "shift_macro_switch_on.png"
 #define PNGSHIFTMACROSWITCHOFF_FN "shift_macro_switch_off.png"
 #define PNGSHIFTSIZESWITCHON_FN "shift_size_switch_on.png"
 #define PNGSHIFTSIZESWITCHOFF_FN "shift_size_switch_off.png"
-

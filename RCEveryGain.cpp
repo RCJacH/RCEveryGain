@@ -1,6 +1,7 @@
 #include "RCEveryGain.h"
 #include "IControls.h"
 #include "IPlug_include_in_plug_src.h"
+#include "Widgets/IBFittedTriggerButtonControl.h"
 #include "Widgets/PNGTabSwitchControl.h"
 #include "Widgets/SVGTabSwitchControl.h"
 
@@ -38,6 +39,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT b = pGraphics->GetBounds();
     const IBitmap backgroundBitmap = pGraphics->LoadBitmap(PNGBACKGROUND_FN);
     pGraphics->AttachBackground(PNGBACKGROUND_FN);
+    const IColor bgIColor = IColor::FromHSLA(.5972f, .12f, .3f);
 
 
     // General Layout
@@ -73,25 +75,50 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_control_size = shift_lane_size.FracRectHorizontal(.88f);
     const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.2f, true);
     const IRECT shift_bulbs_macro = shift_control_macro.GetHPadded(-shift_control_macro.H());
+    const IRECT shift_macro_minus_button = shift_control_macro.GetFromLeft(shift_control_macro.H());
+    const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
 
-    const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE));
+    const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_BLACK));
 
     // pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     // pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
     // pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
 
-    const IVStyle shift_style = DEFAULT_STYLE.WithShowLabel(false);
+    const IText buttonText = DEFAULT_VALUE_TEXT.WithFont("Roboto-Regular").WithSize(16.0).WithFGColor(bgIColor);
+    const IVStyle shift_style = DEFAULT_STYLE.WithShadowOffset(0.f);
+    const IVStyle shift_switch_style = shift_style.WithShowLabel(false).WithValueText(buttonText);
+    const IVStyle shift_button_style = shift_style.WithLabelText(buttonText);
+
+    const std::array<float, 4> shift_button_text_offset = {0.f, -2.f, 0.f, 0.f};
 
     const IBitmap shiftMacroSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHON_FN);
     const IBitmap shiftMacroSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHOFF_FN);
     const std::array<float, 4> shift_macro_text_offset = {0.f, 0.f, 0.f, 0.f};
-    pGraphics->AttachControl(
-      new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_style, shift_macro_text_offset, ETabSwitchHighlightMode::FromCenter));
+    pGraphics->AttachControl(new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_macro_text_offset,
+                                                     ETabSwitchHighlightMode::FromCenter),
+                             kCtrlShiftMacroTabSwitch);
+
+    const IBitmap shiftMacroButtonOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROBUTTONON_FN);
+    const IBitmap shiftMacroButtonOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROBUTTONOFF_FN);
+
+    auto shiftMacroButtonAction = [pGraphics, this](IControl* pCaller, bool isAdd) {
+      auto param = GetParam(kShiftMacro);
+      param->Set(param->Value() + (isAdd ? 1 : -1));
+
+      OnParamChange(kShiftMacro);
+      DefaultClickActionFunc(pCaller);
+      auto ctrlTabSwitch = pCaller->GetUI()->GetControlWithTag(kCtrlShiftMacroTabSwitch);
+      ctrlTabSwitch->SetValue(param->GetNormalized());
+      ctrlTabSwitch->SetDirty(false);
+    };
+    pGraphics->AttachControl(new IBFittedTriggerButtonControl(shift_macro_minus_button.GetPadded(-4.f), shiftMacroButtonOffPNG, shiftMacroButtonOnPNG, "-", shift_button_style,
+                                                              shift_button_text_offset, [shiftMacroButtonAction](IControl* pCaller) { shiftMacroButtonAction(pCaller, false); }));
+    pGraphics->AttachControl(new IBFittedTriggerButtonControl(shift_macro_plus_button.GetPadded(-4.f), shiftMacroButtonOffPNG, shiftMacroButtonOnPNG, "+", shift_button_style, shift_button_text_offset,
+                                                              [shiftMacroButtonAction](IControl* pCaller) { shiftMacroButtonAction(pCaller, true); }));
 
     const IBitmap shiftSizeSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHON_FN);
     const IBitmap shiftSizeSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHOFF_FN);
-    const std::array<float, 4> shift_size_text_offset = {0.f, -2.f, 0.f, 0.f};
-    pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_style, shift_size_text_offset));
+    pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_button_text_offset));
 
     // Fader Section
     // const IRECT fader_inner = fader.GetPadded(-4.0);

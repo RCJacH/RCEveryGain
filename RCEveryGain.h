@@ -31,6 +31,8 @@ enum ECtrlTags
 {
   kCtrlTagInputMeter = 0,
   kCtrlTagOutputMeter,
+  kCtrlShiftMacroTabSwitch,
+  kCtrlShiftSizeTabSwitch,
   kNumCtrlTags
 };
 
