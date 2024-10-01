@@ -65,3 +65,7 @@
 #define PNGSHIFTMACROSWITCHOFF_FN "shift_macro_switch_off.png"
 #define PNGSHIFTSIZESWITCHON_FN "shift_size_switch_on.png"
 #define PNGSHIFTSIZESWITCHOFF_FN "shift_size_switch_off.png"
+#define PNGFADERSLIDER_FN "fader_slider.png"
+#define PNGFADERSLIDER_2X_FN "fader_slider@2x.png"
+#define PNGFADERSLIDERSHADOW_FN "fader_slider_shadow.png"
+#define PNGFADERSLIDERSHADOW_2X_FN "fader_slider_shadow@2x.png"

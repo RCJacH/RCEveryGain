@@ -319,6 +319,15 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h" />
     <ClInclude Include="..\RCEveryGain.h" />
     <ClInclude Include="..\resources\resource.h" />
+    <ClInclude Include="..\widgets\Button.h" />
+    <ClInclude Include="..\widgets\Color.h" />
+    <ClInclude Include="..\widgets\IBFaderSliderControl.h" />
+    <ClInclude Include="..\widgets\IBFittedTriggerButtonControl.h" />
+    <ClInclude Include="..\widgets\PNGTabSwitchControl.h" />
+    <ClInclude Include="..\widgets\RCBulbDisplay.h" />
+    <ClInclude Include="..\widgets\ShiftMacroTabSwitchControl.h" />
+    <ClInclude Include="..\widgets\SVGShiftMacroTabSwitchControl.h" />
+    <ClInclude Include="..\widgets\SVGTabSwitchControl.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Dependencies\IPlug\RTAudio\include\asio.cpp" />

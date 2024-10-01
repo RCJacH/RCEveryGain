@@ -4,6 +4,7 @@
 #include "Widgets/IBFittedTriggerButtonControl.h"
 #include "Widgets/PNGTabSwitchControl.h"
 #include "Widgets/SVGTabSwitchControl.h"
+#include "widgets/IBFaderSliderControl.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
 
@@ -121,14 +122,19 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_button_text_offset));
 
     // Fader Section
-    // const IRECT fader_inner = fader.GetPadded(-4.0);
-    // const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382);
-    // const IRECT fader_fader = fader_inner.GetReducedFromLeft(fader_non_fader.W());
-    // const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
-    // const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
-    // const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
-    // const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
+    const IRECT fader_inner = fader.GetPadded(-4.0);
+    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382, true);
+    const IRECT fader_fader = fader_inner.GetReducedFromRight(fader_non_fader.W());
+    const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
+    const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
+    const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
+    const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
 
+    const IBitmap faderSliderShadow = pGraphics->LoadBitmap(PNGFADERSLIDERSHADOW_FN);
+    const IBitmap faderSlider = pGraphics->LoadBitmap(PNGFADERSLIDER_FN);
+    const std::array<float, 2> fader_slider_shadow_offset = {6.f, 0.f};
+
+    pGraphics->AttachControl(new IBFaderSliderControl(fader_fader, faderSlider, faderSliderShadow, kFader, EDirection::Vertical, 0.0, fader_slider_shadow_offset));
     // const IVStyle fader_knob_style =
     // DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE)); pGraphics->AttachControl(new
     // IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical)); pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve,
