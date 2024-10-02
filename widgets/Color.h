@@ -59,7 +59,16 @@ struct HSLA
     return newHSLA;
   }
 
-  HSLA HSLA::scaled(float scale_h = 0.f, float scale_s = 0.f, float scale_l = 0.f, float scale_a = 0.f)
+  HSLA HSLA::Adjusted(int add_h = 0, float add_s = 0.f, float add_l = 0.f, float add_a = 0.f)
+  {
+    int h = (mH + add_h + 360) % 360;
+    float s = std::max(0.f, std::min(1.f, mS + add_s));
+    float l = std::max(0.f, std::min(1.f, mL + add_l));
+    float a = std::max(0.f, std::min(1.f, mA + add_a));
+    return HSLA(h, s, l, a);
+  }
+
+  HSLA HSLA::Scaled(float scale_h = 0.f, float scale_s = 0.f, float scale_l = 0.f, float scale_a = 0.f)
   {
     int h = mH + int(360.f * (scale_h / 360.f + 1.f));
     float s = mS;
