@@ -32,8 +32,10 @@ public:
 
   virtual ~DrawRect() {}
 
-  virtual void DrawTrack(IGraphics& g, const IRECT& rect, ControlState state, float pct, DirectionType direction);
+  virtual void DrawTrack(IGraphics& g, const IRECT& rect, ControlState state, double pct, DirectionType direction);
   virtual void DrawValue(IGraphics& g, const IRECT& rect, ControlState state, DirectionType direction);
+
+  EDirection ToEDirection(DirectionType dir);
 
 protected:
   float mBorderWidth;
@@ -55,15 +57,27 @@ protected:
   };
 };
 
+EDirection DrawRect::ToEDirection(DirectionType dir)
+{
+  switch (dir)
+  {
+  case DirectionType::Horizontal:
+  case DirectionType::HorizontalSplit:
+  case DirectionType::Filled:
+    return EDirection::Horizontal;
+  case DirectionType::Vertical:
+  case DirectionType::VerticalSplit:
+    return EDirection::Vertical;
+  }
+};
+
 DrawRect::DrawRect(const Color::HSLA color, const IVStyle& style)
   : IVectorBase(style, false, true)
   , mColors(WidgetColors(color))
   , mHoverColors(mColors.HoverColors())
-  , mPressColors(mColors.PressColors())
-{
-}
+  , mPressColors(mColors.PressColors()) {};
 
-void DrawRect::DrawTrack(IGraphics& g, const IRECT& rect, ControlState state = ControlState::kNormal, float pct = 1.f, DirectionType direction = DirectionType::Horizontal)
+void DrawRect::DrawTrack(IGraphics& g, const IRECT& rect, ControlState state = ControlState::kNormal, double pct = 1., DirectionType direction = DirectionType::Horizontal)
 {
   const float border_width = mStyle.drawFrame ? mStyle.frameThickness : 0.f;
   const IRECT contentBounds = rect.GetPadded(-border_width);
@@ -84,7 +98,7 @@ void DrawRect::DrawTrack(IGraphics& g, const IRECT& rect, ControlState state = C
   case DirectionType::HorizontalSplit:
   case DirectionType::VerticalSplit:
     const EDirection fracDirection = (direction == DirectionType::HorizontalSplit) ? EDirection::Horizontal : EDirection::Vertical;
-    valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct > .5f).FracRect(fracDirection, pct - .5f, pct < .5f);
+    valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct > .5).FracRect(fracDirection, pct - .5, pct < .5);
     break;
   case DirectionType::Filled:
     valueBounds = contentBounds;
