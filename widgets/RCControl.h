@@ -6,6 +6,70 @@
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
+struct MouseButtonStatus
+{
+  enum Status
+  {
+    Released,
+    Pressing,
+    Dragging,
+    Clicked,
+  };
+
+  MouseButtonStatus() {};
+
+  float press_x = -1.;
+  float press_y = -1.;
+  Status status = Status::Released;
+
+  bool IsReleased() { return status == Status::Released; };
+  bool IsPressing() { return status == Status::Pressing; };
+  bool IsDragging() { return status == Status::Dragging; };
+  bool IsClicked() { return status == Status::Clicked; };
+
+  void Release() { status = Status::Released; };
+  void SetStatus(float x, float y, bool isHovering, bool isOn)
+  {
+    switch (_CheckPressing(isHovering, isOn))
+    {
+    case 0:
+      status = Status::Released;
+      press_x = -1.;
+      press_y = -1.;
+      break;
+    case 1:
+      status = Status::Pressing;
+      press_x = x;
+      press_y = y;
+      break;
+    case 2:
+      if (IsMouseMovedAfterPressing(x, y))
+        status = Status::Released;
+      else
+        status = Status::Clicked;
+      break;
+    };
+  };
+
+  int _CheckPressing(bool isHovering, bool isOn)
+  {
+    switch (status)
+    {
+    case Status::Released:
+      if (isHovering && isOn)
+        return 1;
+      break;
+    case Status::Pressing:
+    case Status::Dragging:
+      if (!isOn)
+        return 2;
+    }
+    return 0;
+  };
+
+  bool IsMouseMovedAfterPressing(float x, float y) { return press_x == x && press_y == y; };
+};
+
 struct MouseControl
 {
 
