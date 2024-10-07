@@ -90,86 +90,33 @@ struct MouseControl
   float r_press_x = -1.;
   float r_press_y = -1.;
   bool isHovering = false;
-  int lmb = MouseClick::Released;
-  int rmb = MouseClick::Released;
+  MouseButtonStatus lmb = MouseButtonStatus();
+  MouseButtonStatus rmb = MouseButtonStatus();
 
   bool IsHovering() { return isHovering; };
   bool IsAnyPressing() { return IsLPressing() || IsRPressing(); };
-  bool IsLPressing() { return lmb & MouseClick::Pressing; };
-  bool IsRPressing() { return rmb & MouseClick::Pressing; };
-  bool IsLDragging() { return lmb & MouseClick::Dragging; };
-  bool IsRDragging() { return rmb & MouseClick::Dragging; };
-  bool IsLClicked() { return lmb & MouseClick::Clicked; };
-  bool IsRClicked() { return rmb & MouseClick::Clicked; };
+  bool IsLPressing() { return lmb.IsPressing(); };
+  bool IsRPressing() { return rmb.IsPressing(); };
+  bool IsLDragging() { return lmb.IsDragging(); };
+  bool IsRDragging() { return rmb.IsDragging(); };
+  bool IsLClicked() { return lmb.IsClicked(); };
+  bool IsRClicked() { return rmb.IsClicked(); };
 
-  void Release() { lmb = rmb = MouseClick::Released; };
-  void ReleaseL() { lmb = MouseClick::Released; };
-  void ReleaseR() { rmb = MouseClick::Released; };
+  void ReleaseL() { lmb.Release(); };
+  void ReleaseR() { rmb.Release(); };
   void SetHovering(bool state = true)
   {
     isHovering = false;
-    if (state && lmb == 0 && rmb == 0)
+    if (state && lmb.IsReleased() && rmb.IsReleased())
       isHovering = true;
   };
 
   void SetPressing(const IMouseMod& mod)
   {
-    switch (_CheckPressing(lmb, mod.L))
-    {
-    case 0:
-      lmb = MouseClick::Released;
-      l_press_x = -1.;
-      l_press_y = -1.;
-      break;
-    case 1:
-      lmb = MouseClick::Pressing;
-      l_press_x = cur_x;
-      l_press_y = cur_y;
-      break;
-    case 2:
-      if (_CheckClickPosition(l_press_x, l_press_y))
-        lmb = MouseClick::Clicked;
-      else
-        lmb = MouseClick::Released;
-      break;
-    };
-    switch (_CheckPressing(rmb, mod.R))
-    {
-    case 0:
-      rmb = MouseClick::Released;
-      r_press_x = -1.;
-      r_press_y = -1.;
-      break;
-    case 1:
-      rmb = MouseClick::Pressing;
-      r_press_x = cur_x;
-      r_press_y = cur_y;
-      break;
-    case 2:
-      if (_CheckClickPosition(r_press_x, r_press_y))
-        rmb = MouseClick::Clicked;
-      else
-        rmb = MouseClick::Released;
-      break;
-    };
+    lmb.SetStatus(cur_x, cur_y, isHovering, mod.L);
+    rmb.SetStatus(cur_x, cur_y, isHovering, mod.R);
   };
 
-  int _CheckPressing(int mb, bool state)
-  {
-    switch (mb)
-    {
-    case MouseClick::Released:
-      if (isHovering && state)
-        return 1;
-      break;
-    case MouseClick::Pressing:
-    case MouseClick::Dragging:
-      if (!state)
-        return 2;
-    }
-    return 0;
-  };
-  bool _CheckClickPosition(float x, float y) { return cur_x == x && cur_y == y; };
   void UpdatePosition(float x, float y)
   {
     cur_x = x;
