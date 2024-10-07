@@ -12,8 +12,8 @@ struct WidgetColors
 
   WidgetColors(Color::HSLA color)
     : mainColor(color)
-    , borderColor(color.Scaled(0., -.1, .2))
-    , labelColor(color.Scaled(0., -.1, .5)) {};
+    , borderColor(color.Scaled(0., -.1f, .2f))
+    , labelColor(color.Scaled(0., -.1f, .5f)) {};
 
   Color::HSLA mainColor;
   Color::HSLA borderColor;
@@ -23,9 +23,9 @@ struct WidgetColors
   IColor WidgetColors::GetBorderColor() { return borderColor.AsIColor(); }
   IColor WidgetColors::GetLabelColor() { return labelColor.AsIColor(); }
 
-  WidgetColors WidgetColors::HoverColors() { return WidgetColors(mainColor.Adjusted(0, -.05, .05)); }
-  WidgetColors WidgetColors::PressColors() { return WidgetColors(mainColor.Adjusted(0, -.1, .1)); }
-  WidgetColors WidgetColors::DisabledColors() { return WidgetColors(mainColor.Adjusted(-90, -.3, -.2)); }
+  WidgetColors WidgetColors::HoverColors() { return WidgetColors(mainColor.Adjusted(0, -.05f, .05f)); }
+  WidgetColors WidgetColors::PressColors() { return WidgetColors(mainColor.Adjusted(0, -.1f, .1f)); }
+  WidgetColors WidgetColors::DisabledColors() { return WidgetColors(mainColor.Adjusted(-90, -.3f, -.2f)); }
 };
 END_IGRAPHICS_NAMESPACE
 END_IPLUG_NAMESPACE
