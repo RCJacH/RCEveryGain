@@ -207,10 +207,17 @@ void RCControl::OnMouseUp(float x, float y, const IMouseMod& mod)
   MouseUpAction(mod);
   mMouseControl.SetPressing(mod);
   if (mMouseControl.IsLClicked())
+  {
     MouseLClickAction(mod);
+    mMouseControl.ReleaseL();
+  }
   if (mMouseControl.IsRClicked())
+  {
     MouseRClickAction(mod);
+    mMouseControl.ReleaseR();
+  }
   SetDirty(false);
+  mMouseControl.SetHovering(mRECT.Contains(x, y));
 }
 
 void RCControl::OnMouseDrag(float x, float y, float dX, float dY, const IMouseMod& mod)
