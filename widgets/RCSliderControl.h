@@ -94,14 +94,13 @@ void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
   const float y = mMouseControl.cur_y;
 
   double gearing = IsFineControl(mod, false) ? mGearing * 10.0 : mGearing;
-  double d;
 
   if (mDirection == EDirection::Vertical)
-    d = static_cast<double>((y - mMouseControl.lmb.press_y) / static_cast<double>(mTrackBounds.T - mTrackBounds.B) / gearing);
+    mMouseControl.lmb.d_pos += static_cast<double>(dY / static_cast<double>(mTrackBounds.H()) / gearing);
   else
-    d = static_cast<double>((x - mMouseControl.lmb.press_x) / static_cast<double>(mTrackBounds.R - mTrackBounds.L) / gearing);
+    mMouseControl.lmb.d_pos += static_cast<double>(dX / static_cast<double>(mTrackBounds.W()) / gearing);
 
-  double v = Clip(d + mMouseLDownValue, 0., 1.);
+  double v = Clip(mMouseControl.lmb.d_pos + mMouseLDownValue, 0., 1.);
 
   if (pParam && pParam->GetStepped() && pParam->GetStep() > 0)
     v = pParam->ConstrainNormalized(v);

@@ -20,7 +20,7 @@ struct MouseButtonStatus
 
   float press_x = -1.;
   float press_y = -1.;
-  double press_v = -1.;
+  double d_pos = 0.;
   Status status = Status::Released;
 
   bool IsReleased() { return status == Status::Released; };
@@ -33,7 +33,7 @@ struct MouseButtonStatus
     status = Status::Released;
     press_x = -1.;
     press_y = -1.;
-    press_v = -1.;
+    d_pos = 0.;
   };
   void SetStatus(float x, float y, bool isHovering, bool isOn)
   {
@@ -46,6 +46,7 @@ struct MouseButtonStatus
       status = Status::Pressing;
       press_x = x;
       press_y = y;
+      d_pos = 0.;
       break;
     case 2:
       if (IsMouseMovedAfterPressing(x, y))
