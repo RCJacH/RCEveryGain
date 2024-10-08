@@ -82,7 +82,7 @@ void RCSliderControl::MouseRClickAction(const IMouseMod& mod)
 {
   if (!mMouseControl.IsLPressing())
     SetValueToDefault(GetValIdxForPos(mMouseControl.cur_x, mMouseControl.cur_y));
-  mMouseControl.Release();
+  mMouseControl.ReleaseL();
 }
 
 void RCSliderControl::OnMouseDblClick(float x, float y, const IMouseMod& mod) { PromptUserInput(GetValIdxForPos(x, y)); }

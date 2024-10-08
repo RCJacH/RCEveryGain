@@ -102,6 +102,11 @@ struct MouseControl
   bool IsLClicked() { return lmb.IsClicked(); };
   bool IsRClicked() { return rmb.IsClicked(); };
 
+  void Release()
+  {
+    ReleaseL();
+    ReleaseR();
+  };
   void ReleaseL() { lmb.Release(); };
   void ReleaseR() { rmb.Release(); };
   void SetHovering(bool state = true)
