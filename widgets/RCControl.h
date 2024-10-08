@@ -20,6 +20,7 @@ struct MouseButtonStatus
 
   float press_x = -1.;
   float press_y = -1.;
+  double press_v = -1.;
   Status status = Status::Released;
 
   bool IsReleased() { return status == Status::Released; };
@@ -27,15 +28,19 @@ struct MouseButtonStatus
   bool IsDragging() { return status == Status::Dragging; };
   bool IsClicked() { return status == Status::Clicked; };
 
-  void Release() { status = Status::Released; };
+  void Release()
+  {
+    status = Status::Released;
+    press_x = -1.;
+    press_y = -1.;
+    press_v = -1.;
+  };
   void SetStatus(float x, float y, bool isHovering, bool isOn)
   {
     switch (_CheckPressing(isHovering, isOn))
     {
     case 0:
-      status = Status::Released;
-      press_x = -1.;
-      press_y = -1.;
+      Release();
       break;
     case 1:
       status = Status::Pressing;
