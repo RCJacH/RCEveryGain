@@ -85,10 +85,6 @@ struct MouseControl
 
   float cur_x = -1.;
   float cur_y = -1.;
-  float l_press_x = -1.;
-  float l_press_y = -1.;
-  float r_press_x = -1.;
-  float r_press_y = -1.;
   bool isHovering = false;
   MouseButtonStatus lmb = MouseButtonStatus();
   MouseButtonStatus rmb = MouseButtonStatus();

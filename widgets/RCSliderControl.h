@@ -97,9 +97,9 @@ void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
   double d;
 
   if (mDirection == EDirection::Vertical)
-    d = static_cast<double>((y - mMouseControl.l_press_y) / static_cast<double>(mTrackBounds.T - mTrackBounds.B) / gearing);
+    d = static_cast<double>((y - mMouseControl.lmb.press_y) / static_cast<double>(mTrackBounds.T - mTrackBounds.B) / gearing);
   else
-    d = static_cast<double>((x - mMouseControl.l_press_x) / static_cast<double>(mTrackBounds.R - mTrackBounds.L) / gearing);
+    d = static_cast<double>((x - mMouseControl.lmb.press_x) / static_cast<double>(mTrackBounds.R - mTrackBounds.L) / gearing);
 
   double v = Clip(d + mMouseLDownValue, 0., 1.);
 
