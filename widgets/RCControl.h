@@ -10,10 +10,10 @@ struct MouseButtonStatus
 {
   enum Status
   {
-    Released,
-    Pressing,
-    Dragging,
-    Clicked,
+    Released = 1,
+    Pressing = 2,
+    Dragging = 6,
+    Clicked = 9,
   };
 
   MouseButtonStatus() {};
@@ -24,7 +24,9 @@ struct MouseButtonStatus
   Status status = Status::Released;
 
   bool IsReleased() { return status == Status::Released; };
+  bool IsUp() { return status & Status::Released; };
   bool IsPressing() { return status == Status::Pressing; };
+  bool IsDown() { return status & Status::Pressing; };
   bool IsDragging() { return status == Status::Dragging; };
   bool IsClicked() { return status == Status::Clicked; };
 
@@ -49,10 +51,10 @@ struct MouseButtonStatus
       d_pos = 0.;
       break;
     case 2:
-      if (IsMouseMovedAfterPressing(x, y))
-        status = Status::Released;
-      else
+      if (isHovering)
         status = Status::Clicked;
+      else
+        status = Status::Released;
       break;
     };
   };
@@ -72,39 +74,33 @@ struct MouseButtonStatus
     }
     return 0;
   };
-
-  bool IsMouseMovedAfterPressing(float x, float y) { return press_x == x && press_y == y; };
 };
 
 struct MouseControl
 {
-
-  enum MouseClick
-  {
-    Released = 0,
-    Pressing = 1,
-    Dragging = 2,
-    Clicked = 4,
-  };
-
   MouseControl() {};
 
   float cur_x = -1.;
   float cur_y = -1.;
   bool isHovering = false;
+  bool allowRMB = false;
   MouseButtonStatus lmb = MouseButtonStatus();
   MouseButtonStatus rmb = MouseButtonStatus();
 
   bool IsHovering() { return isHovering; };
+  bool IsLNotPressed() { return lmb.IsUp(); };
+  bool IsRNotPressed() { return rmb.IsUp(); };
   bool IsAnyPressing() { return IsLPressing() || IsRPressing(); };
   bool IsLPressing() { return lmb.IsPressing(); };
   bool IsRPressing() { return rmb.IsPressing(); };
+  bool IsLPressed() { return lmb.IsDown(); };
+  bool IsRPressed() { return rmb.IsDown(); };
   bool IsLDragging() { return lmb.IsDragging(); };
   bool IsRDragging() { return rmb.IsDragging(); };
   bool IsLClicked() { return lmb.IsClicked(); };
   bool IsRClicked() { return rmb.IsClicked(); };
 
-  void Release()
+  void ReleaseAll()
   {
     ReleaseL();
     ReleaseR();
@@ -114,7 +110,7 @@ struct MouseControl
   void SetHovering(bool state = true)
   {
     isHovering = false;
-    if (state && lmb.IsReleased() && rmb.IsReleased())
+    if (state && lmb.IsUp() && rmb.IsUp())
       isHovering = true;
   };
 
@@ -230,10 +226,7 @@ void RCControl::OnMouseDrag(float x, float y, float dX, float dY, const IMouseMo
     MouseLDragAction(dX, dY, mod);
   if (mMouseControl.IsRPressing())
     MouseRDragAction(dX, dY, mod);
-  if (dX || dY)
-  {
-    SetDirty(true);
-  }
+  SetDirty(true);
 }
 
 END_IGRAPHICS_NAMESPACE
