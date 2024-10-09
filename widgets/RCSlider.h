@@ -19,6 +19,7 @@ class RCSlider : public RCSliderControl, public IVectorBase, public DrawRect
 public:
   RCSlider(const IRECT& bounds,
            int paramIdx = kNoParameter,
+           const char* label = "",
            const Color::HSLA& color = Color::HSLA{},
            DirectionType dir = DirectionType::Horizontal,
            const IVStyle& style = RC_DEFAULT_STYLE,
@@ -27,6 +28,7 @@ public:
 
   RCSlider(const IRECT& bounds,
            IActionFunction aF,
+           const char* label = "",
            const Color::HSLA& color = Color::HSLA{},
            DirectionType dir = DirectionType::Horizontal,
            const IVStyle& style = RC_DEFAULT_STYLE,
@@ -36,7 +38,7 @@ public:
   virtual ~RCSlider() {}
 
   virtual void Draw(IGraphics& g);
-  virtual void DrawTrack(IGraphics& g, WidgetColors color);
+  virtual void DrawWidget(IGraphics& g, WidgetColors color);
   virtual void DrawValue(IGraphics& g, WidgetColors color);
 
   void SetActive(const bool active) { mActive = active; };
@@ -47,31 +49,41 @@ protected:
   bool mActive = false;
 };
 
-RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const Color::HSLA& color, DirectionType dir, const IVStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControl(bounds, paramIdx, DrawRect::ToEDirection(dir), gearing)
+RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, const Color::HSLA& color, DirectionType dir, const IVStyle& style, bool valueIsEditable, double gearing)
+  : RCSliderControl(bounds, paramIdx, DrawRect::ToEDirection(dir), gearing, 2.0)
   , IVectorBase(style)
   , DrawRect(color)
   , mDirectionType(dir)
 {
+  DisablePrompt(!valueIsEditable);
+  mText = style.valueText;
+  mHideCursorOnDrag = style.hideCursor;
+  mShape = EVShape::Rectangle;
+  AttachIControl(this, label);
 }
 
-RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const Color::HSLA& color, DirectionType dir, const IVStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControl(bounds, aF, DrawRect::ToEDirection(dir), gearing)
+RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, const Color::HSLA& color, DirectionType dir, const IVStyle& style, bool valueIsEditable, double gearing)
+  : RCSliderControl(bounds, aF, DrawRect::ToEDirection(dir), gearing, 2.0)
   , IVectorBase(style)
   , DrawRect(color)
   , mDirectionType(dir)
 {
+  DisablePrompt(!valueIsEditable);
+  mText = style.valueText;
+  mHideCursorOnDrag = style.hideCursor;
+  mShape = EVShape::Rectangle;
+  AttachIControl(this, label);
 }
 
 void RCSlider::Draw(IGraphics& g)
 {
   ControlState state = mMouseControl.IsLDown() ? ControlState::kPressed : mMouseControl.IsHovering() ? ControlState::kHovered : ControlState::kNormal;
   WidgetColors color = GetColors(state);
-  DrawTrack(g, color);
+  DrawWidget(g, color);
   DrawValue(g, color);
 }
 
-void RCSlider::DrawTrack(IGraphics& g, WidgetColors color)
+void RCSlider::DrawWidget(IGraphics& g, WidgetColors color)
 {
   const float border_width = mStyle.drawFrame ? mStyle.frameThickness : 0.f;
   if (border_width)
@@ -82,7 +94,9 @@ void RCSlider::DrawTrack(IGraphics& g, WidgetColors color)
 
   const IRECT contentBounds = mRECT.GetPadded(-border_width);
   IRECT valueBounds;
+  IRECT handleBounds;
   EDirection fracDirection;
+  const float halfHandleSize = mHandleSize * .5f;
   const double pct = GetValue();
   switch (mDirectionType)
   {
@@ -90,17 +104,33 @@ void RCSlider::DrawTrack(IGraphics& g, WidgetColors color)
   case DirectionType::Vertical:
     fracDirection = (mDirectionType == DirectionType::Horizontal) ? EDirection::Horizontal : EDirection::Vertical;
     valueBounds = contentBounds.FracRect(fracDirection, pct);
+    handleBounds = valueBounds.FracRect(fracDirection, 0.0, true);
     break;
   case DirectionType::HorizontalSplit:
   case DirectionType::VerticalSplit:
     fracDirection = (mDirectionType == DirectionType::HorizontalSplit) ? EDirection::Horizontal : EDirection::Vertical;
     valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct >= .5).FracRect(fracDirection, abs(0.5 - pct) * 2., pct < .5);
+    handleBounds = valueBounds.FracRect(fracDirection, 0.0, pct >= .5);
     break;
   case DirectionType::Filled:
     valueBounds = contentBounds;
     break;
   }
   g.FillRect(color.GetColor(), valueBounds, &mBlend);
+
+  if (mHandleSize > 0.f && pct != 0. && pct != 1.)
+  {
+    switch (fracDirection)
+    {
+    case EDirection::Horizontal:
+      handleBounds = handleBounds.GetHPadded(halfHandleSize);
+      break;
+    case EDirection::Vertical:
+      handleBounds = handleBounds.GetVPadded(halfHandleSize);
+      break;
+    }
+    g.FillRect(color.GetBorderColor(), handleBounds, &mBlend);
+  }
 }
 
 void RCSlider::DrawValue(IGraphics& g, WidgetColors color)
@@ -109,6 +139,7 @@ void RCSlider::DrawValue(IGraphics& g, WidgetColors color)
     return;
 
   mStyle.valueText.mFGColor = color.GetLabelColor();
+  const auto value = mValueStr.Get();
   g.DrawText(mStyle.valueText, mValueStr.Get(), mRECT, &mBlend);
 }
 
