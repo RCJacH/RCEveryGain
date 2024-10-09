@@ -22,15 +22,16 @@ public:
   void MouseUpAction(const IMouseMod& mod) override;
   // void MouseHoverAction(const IMouseMod& mod) override;
   void MouseLPressAction(const IMouseMod& mod) override;
-  // void MouseLClickAction(const IMouseMod& mod) override;
+  void MouseLClickAction(const IMouseMod& mod) override;
   // void MouseLReleaseAction() override;
-  void MouseRPressAction(const IMouseMod& mod) override;
-  void MouseRClickAction(const IMouseMod& mod) override;
+  // void MouseRPressAction(const IMouseMod& mod) override;
+  // void MouseRClickAction(const IMouseMod& mod) override;
   // void MouseRReleaseAction() override;
   // void MouseDragAction(const IMouseMod& mod) override;
   void MouseLDragAction(float dX, float dY, const IMouseMod& mod) override;
   // void MouseRDragAction(float dX, float dY, const IMouseMod& mod) override;
   void OnMouseWheel(float x, float y, const IMouseMod& mod, float d) override;
+  void CreateContextMenu(IPopupMenu& contextMenu) override;
 
   void SetGearing(double gearing) { mGearing = gearing; }
   bool IsFineControl(const IMouseMod& mod, bool wheel) const;
@@ -76,13 +77,10 @@ void RCSliderControl::MouseUpAction(const IMouseMod& mod)
 
 void RCSliderControl::MouseLPressAction(const IMouseMod& mod) { mMouseLDownValue = GetValue(); }
 
-void RCSliderControl::MouseRPressAction(const IMouseMod& mod) { mMouseRDownValue = GetValue(); }
-
-void RCSliderControl::MouseRClickAction(const IMouseMod& mod)
+void RCSliderControl::MouseLClickAction(const IMouseMod& mod)
 {
-  if (!mMouseControl.IsLPressing())
+  if (mod.C)
     SetValueToDefault(GetValIdxForPos(mMouseControl.cur_x, mMouseControl.cur_y));
-  mMouseControl.ReleaseL();
 }
 
 void RCSliderControl::OnMouseDblClick(float x, float y, const IMouseMod& mod) { PromptUserInput(GetValIdxForPos(x, y)); }
@@ -137,6 +135,8 @@ void RCSliderControl::OnMouseWheel(float x, float y, const IMouseMod& mod, float
   SetValue(newValue);
   SetDirty();
 }
+
+void RCSliderControl::CreateContextMenu(IPopupMenu& contextMenu) { mMouseControl.ReleaseL(); }
 
 bool RCSliderControl::IsFineControl(const IMouseMod& mod, bool wheel) const
 {
