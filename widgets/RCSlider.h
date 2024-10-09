@@ -42,7 +42,9 @@ public:
   virtual void DrawValue(IGraphics& g, WidgetColors color);
 
   void SetActive(const bool active) { mActive = active; };
-
+  void OnResize() override;
+  void SetDirty(bool push, int valIdx = kNoValIdx) override;
+  void OnInit() override;
 
 protected:
   DirectionType mDirectionType;
@@ -141,6 +143,30 @@ void RCSlider::DrawValue(IGraphics& g, WidgetColors color)
   mStyle.valueText.mFGColor = color.GetLabelColor();
   const auto value = mValueStr.Get();
   g.DrawText(mStyle.valueText, mValueStr.Get(), mRECT, &mBlend);
+}
+
+void RCSlider::OnResize()
+{
+  SetTargetRECT(MakeRects(mRECT));
+  SetDirty(false);
+}
+
+void RCSlider::SetDirty(bool push, int valIdx)
+{
+  RCSliderControl::SetDirty(push);
+
+  const IParam* pParam = GetParam();
+
+  if (pParam)
+    pParam->GetDisplayWithLabel(mValueStr);
+}
+
+void RCSlider::OnInit()
+{
+  const IParam* pParam = GetParam();
+
+  if (pParam)
+    pParam->GetDisplayWithLabel(mValueStr);
 }
 
 END_IGRAPHICS_NAMESPACE
