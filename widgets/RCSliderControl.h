@@ -39,7 +39,6 @@ public:
 protected:
   bool mHideCursorOnDrag = true;
   EDirection mDirection;
-  IRECT mTrackBounds;
   float mHandleSize;
   double mGearing;
   double mMouseLDownValue;
@@ -65,7 +64,6 @@ RCSliderControl::RCSliderControl(const IRECT& bounds, IActionFunction aF, EDirec
 void RCSliderControl::OnResize()
 {
   SetTargetRECT(mRECT);
-  mTrackBounds = mRECT;
   SetDirty(false);
 }
 
@@ -94,9 +92,9 @@ void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
   double gearing = IsFineControl(mod, false) ? mGearing * 10.0 : mGearing;
 
   if (mDirection == EDirection::Vertical)
-    mMouseControl.lmb.d_pos += static_cast<double>(dY / static_cast<double>(mTrackBounds.H()) / gearing);
+    mMouseControl.lmb.d_pos += static_cast<double>(dY / static_cast<double>(mRECT.H()) / gearing);
   else
-    mMouseControl.lmb.d_pos += static_cast<double>(dX / static_cast<double>(mTrackBounds.W()) / gearing);
+    mMouseControl.lmb.d_pos += static_cast<double>(dX / static_cast<double>(mRECT.W()) / gearing);
 
   double v = Clip(mMouseControl.lmb.d_pos + mMouseLDownValue, 0., 1.);
 
@@ -150,7 +148,6 @@ bool RCSliderControl::IsFineControl(const IMouseMod& mod, bool wheel) const
   return (mod.C || mod.S);
 #endif
 }
-
 
 END_IGRAPHICS_NAMESPACE
 END_IPLUG_NAMESPACE
