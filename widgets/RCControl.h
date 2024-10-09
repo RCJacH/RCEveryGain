@@ -88,13 +88,13 @@ struct MouseControl
   MouseButtonStatus rmb = MouseButtonStatus();
 
   bool IsHovering() { return isHovering; };
-  bool IsLNotPressed() { return lmb.IsUp(); };
-  bool IsRNotPressed() { return rmb.IsUp(); };
+  bool IsLUp() { return lmb.IsUp(); };
+  bool IsRUp() { return rmb.IsUp(); };
   bool IsAnyPressing() { return IsLPressing() || IsRPressing(); };
   bool IsLPressing() { return lmb.IsPressing(); };
   bool IsRPressing() { return rmb.IsPressing(); };
-  bool IsLPressed() { return lmb.IsDown(); };
-  bool IsRPressed() { return rmb.IsDown(); };
+  bool IsLDown() { return lmb.IsDown(); };
+  bool IsRDown() { return rmb.IsDown(); };
   bool IsLDragging() { return lmb.IsDragging(); };
   bool IsRDragging() { return rmb.IsDragging(); };
   bool IsLClicked() { return lmb.IsClicked(); };

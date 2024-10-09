@@ -65,7 +65,7 @@ RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const Color::HSLA& c
 
 void RCSlider::Draw(IGraphics& g)
 {
-  ControlState state = mMouseControl.IsLPressed() ? ControlState::kPressed : mMouseControl.IsHovering() ? ControlState::kHovered : ControlState::kNormal;
+  ControlState state = mMouseControl.IsLDown() ? ControlState::kPressed : mMouseControl.IsHovering() ? ControlState::kHovered : ControlState::kNormal;
   WidgetColors color = GetColors(state);
   DrawTrack(g, color);
   DrawValue(g, color);
