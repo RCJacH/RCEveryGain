@@ -94,7 +94,7 @@ void RCSlider::DrawTrack(IGraphics& g, WidgetColors color)
   case DirectionType::HorizontalSplit:
   case DirectionType::VerticalSplit:
     fracDirection = (mDirectionType == DirectionType::HorizontalSplit) ? EDirection::Horizontal : EDirection::Vertical;
-    valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct > .5).FracRect(fracDirection, abs(0.5 - pct) * 2., pct < .5);
+    valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct >= .5).FracRect(fracDirection, abs(0.5 - pct) * 2., pct < .5);
     break;
   case DirectionType::Filled:
     valueBounds = contentBounds;
