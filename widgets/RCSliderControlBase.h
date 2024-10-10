@@ -8,13 +8,13 @@ BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
 /** A base class for slider/fader controls, to handle mouse action and Sender. */
-class RCSliderControl : public RCControl
+class RCSliderControlBase : public RCControl
 {
 public:
-  RCSliderControl(const IRECT& bounds, int paramIdx = kNoParameter, EDirection dir = EDirection::Vertical, double gearing = DEFAULT_GEARING, float handleSize = 0.f);
-  RCSliderControl(const IRECT& bounds, IActionFunction aF = nullptr, EDirection dir = EDirection::Vertical, double gearing = DEFAULT_GEARING, float handleSize = 0.f);
+  RCSliderControlBase(const IRECT& bounds, int paramIdx = kNoParameter, EDirection dir = EDirection::Vertical, double gearing = DEFAULT_GEARING, float handleSize = 0.f);
+  RCSliderControlBase(const IRECT& bounds, IActionFunction aF = nullptr, EDirection dir = EDirection::Vertical, double gearing = DEFAULT_GEARING, float handleSize = 0.f);
 
-  virtual ~RCSliderControl() {}
+  virtual ~RCSliderControlBase() {}
 
   void OnResize() override;
   void OnMouseDblClick(float x, float y, const IMouseMod& mod) override;
@@ -47,7 +47,7 @@ protected:
   double mMouseRDownValue;
 };
 
-RCSliderControl::RCSliderControl(const IRECT& bounds, int paramIdx, EDirection dir, double gearing, float handleSize)
+RCSliderControlBase::RCSliderControlBase(const IRECT& bounds, int paramIdx, EDirection dir, double gearing, float handleSize)
   : RCControl(bounds, paramIdx)
   , mDirection(dir)
   , mHandleSize(handleSize)
@@ -55,7 +55,7 @@ RCSliderControl::RCSliderControl(const IRECT& bounds, int paramIdx, EDirection d
 {
 }
 
-RCSliderControl::RCSliderControl(const IRECT& bounds, IActionFunction aF, EDirection dir, double gearing, float handleSize)
+RCSliderControlBase::RCSliderControlBase(const IRECT& bounds, IActionFunction aF, EDirection dir, double gearing, float handleSize)
   : RCControl(bounds, aF)
   , mDirection(dir)
   , mHandleSize(handleSize)
@@ -63,29 +63,29 @@ RCSliderControl::RCSliderControl(const IRECT& bounds, IActionFunction aF, EDirec
 {
 }
 
-void RCSliderControl::OnResize()
+void RCSliderControlBase::OnResize()
 {
   SetTargetRECT(mRECT);
   SetDirty(false);
 }
 
-void RCSliderControl::MouseUpAction(const IMouseMod& mod)
+void RCSliderControlBase::MouseUpAction(const IMouseMod& mod)
 {
   if (mHideCursorOnDrag)
     GetUI()->HideMouseCursor(false);
 }
 
-void RCSliderControl::MouseLPressAction(const IMouseMod& mod) { mMouseLDownValue = GetValue(); }
+void RCSliderControlBase::MouseLPressAction(const IMouseMod& mod) { mMouseLDownValue = GetValue(); }
 
-void RCSliderControl::MouseLClickAction(const IMouseMod& mod)
+void RCSliderControlBase::MouseLClickAction(const IMouseMod& mod)
 {
   if (mod.C)
     SetValueToDefault(GetValIdxForPos(mMouseControl.cur_x, mMouseControl.cur_y));
 }
 
-void RCSliderControl::OnMouseDblClick(float x, float y, const IMouseMod& mod) { PromptUserInput(GetValIdxForPos(x, y)); }
+void RCSliderControlBase::OnMouseDblClick(float x, float y, const IMouseMod& mod) { PromptUserInput(GetValIdxForPos(x, y)); }
 
-void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
+void RCSliderControlBase::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
 {
   const IParam* pParam = GetParam();
   const float x = mMouseControl.cur_x;
@@ -106,7 +106,7 @@ void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
   SetValue(v);
 }
 
-void RCSliderControl::OnMouseWheel(float x, float y, const IMouseMod& mod, float d)
+void RCSliderControlBase::OnMouseWheel(float x, float y, const IMouseMod& mod, float d)
 {
   const double gearing = IsFineControl(mod, true) ? 0.001 : 0.01;
   double newValue = 0.0;
@@ -136,9 +136,9 @@ void RCSliderControl::OnMouseWheel(float x, float y, const IMouseMod& mod, float
   SetDirty();
 }
 
-void RCSliderControl::CreateContextMenu(IPopupMenu& contextMenu) { mMouseControl.ReleaseL(); }
+void RCSliderControlBase::CreateContextMenu(IPopupMenu& contextMenu) { mMouseControl.ReleaseL(); }
 
-bool RCSliderControl::IsFineControl(const IMouseMod& mod, bool wheel) const
+bool RCSliderControlBase::IsFineControl(const IMouseMod& mod, bool wheel) const
 {
 #ifdef PROTOOLS
   #ifdef OS_WIN

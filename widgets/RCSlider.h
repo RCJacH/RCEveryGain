@@ -6,12 +6,12 @@
 #include "IGraphicsStructs.h"
 #include "Widgets/Color.h"
 #include "Widgets/RCStyle.h"
-#include "widgets/RCSliderControl.h"
+#include "widgets/RCSliderControlBase.h"
 
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
-class RCSlider : public RCSliderControl
+class RCSlider : public RCSliderControlBase
 {
 public:
   enum DirectionType
@@ -71,7 +71,7 @@ protected:
 };
 
 RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControl(bounds, paramIdx, ToEDirection(dir), gearing, 2.0)
+  : RCSliderControlBase(bounds, paramIdx, ToEDirection(dir), gearing, 2.0)
   , mStyle(style)
   , mDirectionType(dir)
 {
@@ -79,7 +79,7 @@ RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, Directi
 }
 
 RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControl(bounds, aF, ToEDirection(dir), gearing, 2.0)
+  : RCSliderControlBase(bounds, aF, ToEDirection(dir), gearing, 2.0)
   , mStyle(style)
   , mDirectionType(dir)
 {
@@ -177,7 +177,7 @@ void RCSlider::OnResize()
 
 void RCSlider::SetDirty(bool push, int valIdx)
 {
-  RCSliderControl::SetDirty(push);
+  RCSliderControlBase::SetDirty(push);
 
   const IParam* pParam = GetParam();
 
