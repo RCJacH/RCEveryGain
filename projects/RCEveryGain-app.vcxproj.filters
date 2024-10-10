@@ -258,9 +258,6 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h">
       <Filter>IPlug</Filter>
     </ClInclude>
-    <ClInclude Include="..\widgets\Color.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="resources">
@@ -292,9 +289,6 @@
     </Filter>
     <Filter Include="IPlug\APP\RTAudioMidi\include">
       <UniqueIdentifier>{649c5de3-b4c2-4de9-8d57-3b1762646259}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="GUI">
-      <UniqueIdentifier>{208f415b-9ffd-4f9f-8790-e32493855dd9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

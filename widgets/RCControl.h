@@ -1,9 +1,6 @@
 #pragma once
 
 #include "IControl.h"
-#include "IControls.h"
-#include "IGraphics.h"
-#include "IGraphicsStructs.h"
 
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE

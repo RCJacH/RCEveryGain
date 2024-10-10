@@ -1,7 +1,5 @@
 #pragma once
 
-#include "IControl.h"
-#include "IControls.h"
 #include "widgets/RCControl.h"
 
 BEGIN_IPLUG_NAMESPACE

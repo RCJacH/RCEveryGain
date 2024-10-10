@@ -319,7 +319,6 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h" />
     <ClInclude Include="..\RCEveryGain.h" />
     <ClInclude Include="..\resources\resource.h" />
-    <ClInclude Include="..\widgets\Color.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\..\..\Dependencies\IPlug\RTAudio\include\asio.cpp" />
