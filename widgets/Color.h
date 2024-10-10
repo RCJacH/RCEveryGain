@@ -31,35 +31,35 @@ struct HSLA
   float mL;
   float mA;
 
-  HSLA HSLA::WithHue(float hue)
+  HSLA HSLA::WithHue(float hue) const
   {
     HSLA newHSLA = *this;
     newHSLA.mH = hue;
     return newHSLA;
   }
 
-  HSLA HSLA::WithSaturation(float saturation)
+  HSLA HSLA::WithSaturation(float saturation) const
   {
     HSLA newHSLA = *this;
     newHSLA.mS = saturation;
     return newHSLA;
   }
 
-  HSLA HSLA::WithLightness(float lightness)
+  HSLA HSLA::WithLightness(float lightness) const
   {
     HSLA newHSLA = *this;
     newHSLA.mL = lightness;
     return newHSLA;
   }
 
-  HSLA HSLA::WithAlpha(float alpha)
+  HSLA HSLA::WithAlpha(float alpha) const
   {
     HSLA newHSLA = *this;
     newHSLA.mA = alpha;
     return newHSLA;
   }
 
-  HSLA HSLA::Adjusted(int add_h = 0, float add_s = 0.f, float add_l = 0.f, float add_a = 0.f)
+  HSLA HSLA::Adjusted(int add_h = 0, float add_s = 0.f, float add_l = 0.f, float add_a = 0.f) const
   {
     int h = (mH + add_h + 360) % 360;
     float s = std::max(0.f, std::min(1.f, mS + add_s));
@@ -68,7 +68,7 @@ struct HSLA
     return HSLA(h, s, l, a);
   }
 
-  HSLA HSLA::Scaled(float scale_h = 0.f, float scale_s = 0.f, float scale_l = 0.f, float scale_a = 0.f)
+  HSLA HSLA::Scaled(float scale_h = 0.f, float scale_s = 0.f, float scale_l = 0.f, float scale_a = 0.f) const
   {
     int h = mH + int(360.f * (scale_h / 360.f + 1.f));
     float s = mS;
@@ -79,7 +79,7 @@ struct HSLA
     return HSLA(h, s, l, a);
   }
 
-  HSLA HSLA::LinearInterpolate(HSLA other, float h_t = 0.f, float s_t = 0.f, float l_t = 0.f, float a_t = 0.f)
+  HSLA HSLA::LinearInterpolate(HSLA other, float h_t = 0.f, float s_t = 0.f, float l_t = 0.f, float a_t = 0.f) const
   {
     IColor thisRGB = AsIColor();
     IColor otherRGB = other.AsIColor();
@@ -89,7 +89,7 @@ struct HSLA
     return HSLA(int(h * 360), Lerp(mS, other.mS, s_t), Lerp(mL, other.mL, l_t), Lerp(mA, other.mA, a_t));
   }
 
-  IColor HSLA::AsIColor() { return IColor::FromHSLA(mH / 360.f, mS, mL, mA); }
+  IColor HSLA::AsIColor() const { return IColor::FromHSLA(mH / 360.f, mS, mL, mA); }
 };
 } // namespace Color
 
