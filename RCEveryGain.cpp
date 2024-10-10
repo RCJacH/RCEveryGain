@@ -1,10 +1,10 @@
 #include "RCEveryGain.h"
 #include "IControls.h"
 #include "IPlug_include_in_plug_src.h"
-#include "Widgets/IBFittedTriggerButtonControl.h"
-#include "Widgets/PNGTabSwitchControl.h"
-#include "Widgets/SVGTabSwitchControl.h"
-#include "widgets/IBFaderSliderControl.h"
+#include "Widgets/Color.h"
+#include "Widgets/RCLabel.h"
+#include "Widgets/RCSlider.h"
+#include "Widgets/RCStyle.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
 
@@ -35,16 +35,18 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
   mLayoutFunc = [&](IGraphics* pGraphics) {
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
-    // pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
+    pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
-    const IRECT b = pGraphics->GetBounds();
-    const IBitmap backgroundBitmap = pGraphics->LoadBitmap(PNGBACKGROUND_FN);
-    pGraphics->AttachBackground(PNGBACKGROUND_FN);
+    // const IBitmap backgroundBitmap = pGraphics->LoadBitmap(PNGBACKGROUND_FN);
+    // pGraphics->AttachBackground(PNGBACKGROUND_FN);
     const IColor bgIColor = IColor::FromHSLA(.5972f, .12f, .3f);
-
+    const Color::HSLA main_color = Color::HSLA(214, .32f, .3f);
+    const RCStyle main_style = DEFAULT_RCSTYLE.WithColor(main_color);
+    const Color::HSLA header_color = main_color.Scaled(0, -.8, .6);
+    const RCStyle header_style = main_style.WithColor(header_color).WithDrawFrame(false);
 
     // General Layout
-    const IRECT content = b.GetPadded(-8.f);
+    const IRECT content = pGraphics->GetBounds();
     const IRECT header = content.FracRectVertical(0.382f * 0.2f, true);
     const IRECT controls = content.FracRectHorizontal(0.618f + 0.382f * 0.382f).GetReducedFromTop(header.H());
     const IRECT meter = content.GetReducedFromTop(header.H()).GetReducedFromLeft(controls.W());
@@ -67,59 +69,36 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(output_meter, "Outputs", meter_style), kCtrlTagOutputMeter);
 
     // Shift Section
+    const IRECT shift_header = shift.GetFromLeft(24.f);
     const IRECT shift_inner = shift.GetReducedFromLeft(24.f).GetVPadded(-6.f - 6.f * 1.6f);
-    const IRECT shift_lane_macro = shift_inner.SubRectVertical(3, 0).GetReducedFromBottom(4.f);
-    const IRECT shift_lane_micro = shift_inner.SubRectVertical(3, 1).GetVPadded(-4.f);
-    const IRECT shift_lane_size = shift_inner.SubRectVertical(3, 2).GetReducedFromTop(4.f);
+    const IRECT shift_lane_macro = shift_inner.SubRectVertical(3, 0).GetReducedFromBottom(2.f);
+    const IRECT shift_lane_micro = shift_inner.SubRectVertical(3, 1).GetVPadded(-2.f);
+    const IRECT shift_lane_size = shift_inner.SubRectVertical(3, 2).GetReducedFromTop(2.f);
     const IRECT shift_control_macro = shift_lane_macro.FracRectHorizontal(.88f);
-    const IRECT shift_control_micro = shift_lane_micro.FracRectHorizontal(.8f);
+    const IRECT shift_control_micro = shift_lane_micro.FracRectHorizontal(.88f);
     const IRECT shift_control_size = shift_lane_size.FracRectHorizontal(.88f);
-    const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.2f, true);
+    const IRECT shift_label_macro = shift_lane_macro.FracRectHorizontal(.12f, true);
+    const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.12f, true);
+    const IRECT shift_label_size = shift_lane_size.FracRectHorizontal(.12f, true);
     const IRECT shift_bulbs_macro = shift_control_macro.GetHPadded(-shift_control_macro.H());
     const IRECT shift_macro_minus_button = shift_control_macro.GetFromLeft(shift_control_macro.H());
     const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
+    const Color::HSLA shift_color = Color::HSLA(0, .5f, .5f);
+    const RCStyle shift_style = main_style.WithValueTextSize(20.f).WithColor(shift_color);
+    const RCStyle shift_label_style = header_style;
 
-    const IVStyle shift_macro_style = DEFAULT_STYLE.WithShowLabel(false).WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_BLACK));
+    pGraphics->EnableMouseOver(true);
+    pGraphics->AttachControl(new RCLabel(shift_header, "SHIFT", EDirection::Vertical, header_style, 2.f));
+    pGraphics->AttachControl(new RCLabel(shift_label_macro, "MACRO", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(shift_label_micro, "MICRO", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCSlider(shift_control_macro, kShiftMacro, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(shift_control_micro, kShiftMicro, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(shift_control_size, kShiftSize, "", RCSlider::Horizontal, shift_style));
 
-    // pGraphics->AttachControl(new IVSliderControl(shift_control_macro, kShiftMacro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-    // pGraphics->AttachControl(new IVSliderControl(shift_control_micro, kShiftMicro, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-    // pGraphics->AttachControl(new IVSliderControl(shift_control_size, kShiftSize, "", shift_macro_style, true, iplug::igraphics::EDirection::Horizontal));
-
-    const IText buttonText = DEFAULT_VALUE_TEXT.WithFont("Roboto-Regular").WithSize(16.0).WithFGColor(bgIColor);
-    const IVStyle shift_style = DEFAULT_STYLE.WithShadowOffset(0.f);
-    const IVStyle shift_switch_style = shift_style.WithShowLabel(false).WithValueText(buttonText);
-    const IVStyle shift_button_style = shift_style.WithLabelText(buttonText);
-
-    const std::array<float, 4> shift_button_text_offset = {0.f, -2.f, 0.f, 0.f};
-
-    const IBitmap shiftMacroSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHON_FN);
-    const IBitmap shiftMacroSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROSWITCHOFF_FN);
-    const std::array<float, 4> shift_macro_text_offset = {0.f, 0.f, 0.f, 0.f};
-    pGraphics->AttachControl(new PNGTabSwitchControl(shift_bulbs_macro, kShiftMacro, shiftMacroSwitchOffPNG, shiftMacroSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_macro_text_offset,
-                                                     ETabSwitchHighlightMode::FromCenter),
-                             kCtrlShiftMacroTabSwitch);
-
-    const IBitmap shiftMacroButtonOnPNG = pGraphics->LoadBitmap(PNGSHIFTMACROBUTTONON_FN);
-    const IBitmap shiftMacroButtonOffPNG = pGraphics->LoadBitmap(PNGSHIFTMACROBUTTONOFF_FN);
-
-    auto shiftMacroButtonAction = [pGraphics, this](IControl* pCaller, bool isAdd) {
-      auto param = GetParam(kShiftMacro);
-      param->Set(param->Value() + (isAdd ? 1 : -1));
-
-      OnParamChange(kShiftMacro);
-      DefaultClickActionFunc(pCaller);
-      auto ctrlTabSwitch = pCaller->GetUI()->GetControlWithTag(kCtrlShiftMacroTabSwitch);
-      ctrlTabSwitch->SetValue(param->GetNormalized());
-      ctrlTabSwitch->SetDirty(false);
-    };
-    pGraphics->AttachControl(new IBFittedTriggerButtonControl(shift_macro_minus_button.GetPadded(-4.f), shiftMacroButtonOffPNG, shiftMacroButtonOnPNG, "-", shift_button_style,
-                                                              shift_button_text_offset, [shiftMacroButtonAction](IControl* pCaller) { shiftMacroButtonAction(pCaller, false); }));
-    pGraphics->AttachControl(new IBFittedTriggerButtonControl(shift_macro_plus_button.GetPadded(-4.f), shiftMacroButtonOffPNG, shiftMacroButtonOnPNG, "+", shift_button_style, shift_button_text_offset,
-                                                              [shiftMacroButtonAction](IControl* pCaller) { shiftMacroButtonAction(pCaller, true); }));
-
-    const IBitmap shiftSizeSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHON_FN);
-    const IBitmap shiftSizeSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHOFF_FN);
-    pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_button_text_offset));
+    // const IBitmap shiftSizeSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHON_FN);
+    // const IBitmap shiftSizeSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHOFF_FN);
+    // pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_button_text_offset));
 
     // Fader Section
     const IRECT fader_inner = fader.GetPadded(-4.0);
@@ -130,11 +109,11 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
     const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
 
-    const IBitmap faderSliderShadow = pGraphics->LoadBitmap(PNGFADERSLIDERSHADOW_FN);
-    const IBitmap faderSlider = pGraphics->LoadBitmap(PNGFADERSLIDER_FN);
-    const std::array<float, 2> fader_slider_shadow_offset = {6.f, 0.f};
+    // const IBitmap faderSliderShadow = pGraphics->LoadBitmap(PNGFADERSLIDERSHADOW_FN);
+    // const IBitmap faderSlider = pGraphics->LoadBitmap(PNGFADERSLIDER_FN);
+    // const std::array<float, 2> fader_slider_shadow_offset = {6.f, 0.f};
 
-    pGraphics->AttachControl(new IBFaderSliderControl(fader_fader, faderSlider, faderSliderShadow, kFader, EDirection::Vertical, 0.0, fader_slider_shadow_offset));
+    // pGraphics->AttachControl(new IBFaderSliderControl(fader_fader, faderSlider, faderSliderShadow, kFader, EDirection::Vertical, 0.0, fader_slider_shadow_offset));
     // const IVStyle fader_knob_style =
     // DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE)); pGraphics->AttachControl(new
     // IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical)); pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve,
