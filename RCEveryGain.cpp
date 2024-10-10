@@ -102,7 +102,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // Fader Section
     const IRECT fader_header = fader.GetFromLeft(24.f);
-    const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(4.f);
+    const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(4.f).GetReducedFromRight(2.f);
     const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.618f, true);
     const IRECT fader_fader_lane = fader_inner.GetReducedFromRight(fader_non_fader.W() + 2.f);
     const IRECT fader_curve_lane = fader_non_fader.SubRectHorizontal(2, 0).GetHPadded(-2.f);

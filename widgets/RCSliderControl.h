@@ -94,7 +94,7 @@ void RCSliderControl::MouseLDragAction(float dX, float dY, const IMouseMod& mod)
   double gearing = IsFineControl(mod, false) ? mGearing * 10.0 : mGearing;
 
   if (mDirection == EDirection::Vertical)
-    mMouseControl.lmb.d_pos += static_cast<double>(dY / static_cast<double>(mRECT.H()) / gearing);
+    mMouseControl.lmb.d_pos -= static_cast<double>(dY / static_cast<double>(mRECT.H()) / gearing);
   else
     mMouseControl.lmb.d_pos += static_cast<double>(dX / static_cast<double>(mRECT.W()) / gearing);
 
