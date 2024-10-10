@@ -37,7 +37,6 @@ public:
   RCSlider(const IRECT& bounds,
            int paramIdx = kNoParameter,
            const char* label = "",
-           const Color::HSLA& color = Color::HSLA{},
            DirectionType dir = DirectionType::Horizontal,
            const RCStyle& style = RC_DEFAULT_STYLE,
            bool valueIsEditable = false,
@@ -46,7 +45,6 @@ public:
   RCSlider(const IRECT& bounds,
            IActionFunction aF,
            const char* label = "",
-           const Color::HSLA& color = Color::HSLA{},
            DirectionType dir = DirectionType::Horizontal,
            const RCStyle& style = RC_DEFAULT_STYLE,
            bool valueIsEditable = false,
@@ -67,7 +65,7 @@ protected:
   RCStyle mStyle = RC_DEFAULT_STYLE;
 };
 
-RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, const Color::HSLA& color, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
+RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
   : RCSliderControl(bounds, paramIdx, ToEDirection(dir), gearing, 2.0)
   , IVectorBase(DEFAULT_STYLE)
   , mStyle(style)
@@ -77,7 +75,7 @@ RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, const C
   AttachIControl(this, label);
 }
 
-RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, const Color::HSLA& color, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
+RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
   : RCSliderControl(bounds, aF, ToEDirection(dir), gearing, 2.0)
   , IVectorBase(DEFAULT_STYLE)
   , mStyle(style)
