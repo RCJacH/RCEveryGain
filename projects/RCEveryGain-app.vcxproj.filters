@@ -258,31 +258,7 @@
     <ClInclude Include="..\..\..\IPlug\ISender.h">
       <Filter>IPlug</Filter>
     </ClInclude>
-    <ClInclude Include="..\widgets\SVGTabSwitchControl.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\ShiftMacroTabSwitchControl.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\SVGShiftMacroTabSwitchControl.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
     <ClInclude Include="..\widgets\Color.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\RCBulbDisplay.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\PNGTabSwitchControl.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\Button.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\IBFittedTriggerButtonControl.h">
-      <Filter>GUI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\widgets\IBFaderSliderControl.h">
       <Filter>GUI</Filter>
     </ClInclude>
   </ItemGroup>
