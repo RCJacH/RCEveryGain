@@ -88,7 +88,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const RCStyle shift_label_style = header_style;
 
     pGraphics->EnableMouseOver(true);
-    pGraphics->AttachControl(new RCLabel(shift_header, "SHIFT", EDirection::Vertical, header_style, 2.f));
+    pGraphics->AttachControl(new RCLabel(shift_header, "SHIFT", EDirection::Vertical, header_style, 1.6f));
     pGraphics->AttachControl(new RCLabel(shift_label_macro, "MACRO", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCLabel(shift_label_micro, "MICRO", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
@@ -101,23 +101,26 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // pGraphics->AttachControl(new PNGTabSwitchControl(shift_control_size, kShiftSize, shiftSizeSwitchOffPNG, shiftSizeSwitchOnPNG, {}, "", 0.f, shift_switch_style, shift_button_text_offset));
 
     // Fader Section
-    const IRECT fader_inner = fader.GetPadded(-4.0);
-    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(0.382, true);
-    const IRECT fader_fader = fader_inner.GetReducedFromRight(fader_non_fader.W());
-    const IRECT fader_knobs = fader_non_fader.FracRectVertical(0.618, true);
-    const IRECT fader_smooth = fader_knobs.FracRectVertical(0.5);
-    const IRECT fader_curve = fader_knobs.FracRectVertical(0.5, true);
-    const IRECT fader_header = fader_non_fader.GetReducedFromTop(fader_knobs.H());
+    const IRECT fader_header = fader.GetFromLeft(24.f);
+    const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(4.f);
+    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.618f, true);
+    const IRECT fader_fader_lane = fader_inner.GetReducedFromRight(fader_non_fader.W() + 2.f);
+    const IRECT fader_curve_lane = fader_non_fader.SubRectHorizontal(2, 0).GetHPadded(-2.f);
+    const IRECT fader_smooth_lane = fader_non_fader.SubRectHorizontal(2, 1).GetReducedFromLeft(2.f);
+    const IRECT fader_control_fader = fader_fader_lane.FracRectVertical(.88f, true);
+    const IRECT fader_control_curve = fader_curve_lane.FracRectVertical(.88f, true);
+    const IRECT fader_control_smooth = fader_smooth_lane.FracRectVertical(.88f, true);
+    const IRECT fader_label_fader = fader_fader_lane.FracRectVertical(.12f);
+    const IRECT fader_label_curve = fader_curve_lane.FracRectVertical(.12f);
+    const IRECT fader_label_smooth = fader_smooth_lane.FracRectVertical(.12f);
 
-    // const IBitmap faderSliderShadow = pGraphics->LoadBitmap(PNGFADERSLIDERSHADOW_FN);
-    // const IBitmap faderSlider = pGraphics->LoadBitmap(PNGFADERSLIDER_FN);
-    // const std::array<float, 2> fader_slider_shadow_offset = {6.f, 0.f};
-
-    // pGraphics->AttachControl(new IBFaderSliderControl(fader_fader, faderSlider, faderSliderShadow, kFader, EDirection::Vertical, 0.0, fader_slider_shadow_offset));
-    // const IVStyle fader_knob_style =
-    // DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE)); pGraphics->AttachControl(new
-    // IVSliderControl(fader_fader, kFader, "", shift_macro_style, true, iplug::igraphics::EDirection::Vertical)); pGraphics->AttachControl(new IVKnobControl(fader_curve.GetPadded(-4.), kFaderCurve,
-    // "Curve", fader_knob_style)); pGraphics->AttachControl(new IVKnobControl(fader_smooth.GetPadded(-4.), kFaderSmoothing, "Smooth", fader_knob_style));
+    pGraphics->AttachControl(new RCLabel(fader_header, "FADER", EDirection::Vertical, header_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(fader_label_fader, "VOLUME", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_label_curve, "CURVE", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_label_smooth, "SMOOTH", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCSlider(fader_control_fader, kFader, "", RCSlider::Vertical, shift_style));
+    pGraphics->AttachControl(new RCSlider(fader_control_curve, kFaderCurve, "", RCSlider::Vertical, shift_style));
+    pGraphics->AttachControl(new RCSlider(fader_control_smooth, kFaderSmoothing, "", RCSlider::Vertical, shift_style));
 
     // Gain Section
 
