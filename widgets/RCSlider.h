@@ -9,7 +9,7 @@
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
-class RCSlider : public RCSliderControl, public IVectorBase
+class RCSlider : public RCSliderControl
 {
 public:
   enum DirectionType
@@ -63,26 +63,23 @@ public:
 protected:
   DirectionType mDirectionType;
   RCStyle mStyle = RC_DEFAULT_STYLE;
+  WDL_String mValueStr;
 };
 
 RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
   : RCSliderControl(bounds, paramIdx, ToEDirection(dir), gearing, 2.0)
-  , IVectorBase(DEFAULT_STYLE)
   , mStyle(style)
   , mDirectionType(dir)
 {
   DisablePrompt(!valueIsEditable);
-  AttachIControl(this, label);
 }
 
 RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
   : RCSliderControl(bounds, aF, ToEDirection(dir), gearing, 2.0)
-  , IVectorBase(DEFAULT_STYLE)
   , mStyle(style)
   , mDirectionType(dir)
 {
   DisablePrompt(!valueIsEditable);
-  AttachIControl(this, label);
 }
 
 void RCSlider::Draw(IGraphics& g)
@@ -150,7 +147,7 @@ void RCSlider::DrawValue(IGraphics& g, WidgetColors color)
 
 void RCSlider::OnResize()
 {
-  SetTargetRECT(MakeRects(mRECT));
+  mMouseControl.ReleaseAll();
   SetDirty(false);
 }
 
