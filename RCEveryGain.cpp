@@ -124,20 +124,35 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // Gain Section
 
-    // const IRECT gain_inner = gain.GetHPadded(-4.);
-    // const IRECT gain_label = gain_inner.GetGridCell(0, 2, 3);
-    // const IRECT gain_mid = gain_inner.GetGridCell(1, 2, 3);
-    // const IRECT gain_side = gain_inner.GetGridCell(2, 2, 3);
-    // const IRECT gain_left = gain_inner.GetGridCell(3, 2, 3);
-    // const IRECT gain_master = gain_inner.GetGridCell(4, 2, 3);
-    // const IRECT gain_right = gain_inner.GetGridCell(5, 2, 3);
+    const IRECT gain_header = gain.GetFromRight(24.f);
+    const IRECT gain_inner = gain.GetReducedFromRight(24.f).GetVPadded(-4.f);
+    const IRECT gain_l_lane = gain_inner.SubRectVertical(5, 0).GetVPadded(-2.f);
+    const IRECT gain_r_lane = gain_inner.SubRectVertical(5, 1).GetVPadded(-2.f);
+    const IRECT gain_m_lane = gain_inner.SubRectVertical(5, 2).GetVPadded(-2.f);
+    const IRECT gain_s_lane = gain_inner.SubRectVertical(5, 3).GetVPadded(-2.f);
+    const IRECT gain_g_lane = gain_inner.SubRectVertical(5, 4).GetVPadded(-2.f);
+    const IRECT gain_l_control = gain_l_lane.GetReducedFromLeft(24.f);
+    const IRECT gain_r_control = gain_r_lane.GetReducedFromLeft(24.f);
+    const IRECT gain_m_control = gain_m_lane.GetReducedFromLeft(24.f);
+    const IRECT gain_s_control = gain_s_lane.GetReducedFromLeft(24.f);
+    const IRECT gain_g_control = gain_g_lane.GetReducedFromLeft(24.f);
+    const IRECT gain_l_label = gain_l_lane.GetFromLeft(24.f);
+    const IRECT gain_r_label = gain_r_lane.GetFromLeft(24.f);
+    const IRECT gain_m_label = gain_m_lane.GetFromLeft(24.f);
+    const IRECT gain_s_label = gain_s_lane.GetFromLeft(24.f);
+    const IRECT gain_g_label = gain_g_lane.GetFromLeft(24.f);
 
-    // const IVStyle gain_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
-    // pGraphics->AttachControl(new IVKnobControl(gain_mid.GetPadded(-8.), kGainMid, "", gain_style));
-    // pGraphics->AttachControl(new IVKnobControl(gain_side.GetPadded(-8.), kGainSide, "", gain_style));
-    // pGraphics->AttachControl(new IVKnobControl(gain_left.GetPadded(-8.), kGainLeft, "", gain_style));
-    // pGraphics->AttachControl(new IVKnobControl(gain_master.GetPadded(-8.), kGainMaster, "", gain_style));
-    // pGraphics->AttachControl(new IVKnobControl(gain_right.GetPadded(-8.), kGainRight, "", gain_style));
+    pGraphics->AttachControl(new RCLabel(gain_header, "GAIN", EDirection::Vertical, header_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(gain_l_label, "L", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_r_label, "R", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_m_label, "M", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_s_label, "S", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_g_label, "G", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCSlider(gain_l_control, kGainLeft, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(gain_r_control, kGainRight, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(gain_m_control, kGainMid, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(gain_s_control, kGainSide, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(gain_g_control, kGainMaster, "", RCSlider::HorizontalSplit, shift_style));
 
     // Trim Section
 
