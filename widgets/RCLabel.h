@@ -21,6 +21,7 @@ protected:
 RCLabel::RCLabel(const IRECT& bounds, const char* label, EDirection dir, const RCStyle& style, float gap)
   : ITextControl(bounds, label)
   , mDirection(dir)
+  , mStyle(style)
   , mGap(gap)
 {
   mText = style.valueText;

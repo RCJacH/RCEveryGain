@@ -88,7 +88,7 @@ struct RCStyle
   RCStyle WithColor(Color::HSLA newColor) const
   {
     RCStyle newStyle = *this;
-    newStyle.mColors = WidgetColors(baseColor);
+    newStyle.mColors = WidgetColors(newColor);
     newStyle.mHoverColors = newStyle.mColors.HoverColors();
     newStyle.mPressColors = newStyle.mColors.PressColors();
     newStyle.mDisabledColors = newStyle.mColors.DisabledColors();
