@@ -54,7 +54,9 @@ public:
 
   virtual void Draw(IGraphics& g);
   virtual void DrawWidget(IGraphics& g, WidgetColors color);
-  virtual void DrawValue(IGraphics& g, WidgetColors color);
+  virtual void DrawBorder(IGraphics& g, WidgetColors color, IRECT bounds, float borderWidth);
+  virtual void DrawHandle(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct);
+  virtual void DrawValueText(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct);
 
   void OnResize() override;
   void SetDirty(bool push, int valIdx = kNoValIdx) override;
@@ -86,23 +88,17 @@ void RCSlider::Draw(IGraphics& g)
 {
   auto color = mStyle.GetColors(mMouseControl.IsHovering(), mMouseControl.IsLDown(), IsDisabled());
   DrawWidget(g, color);
-  DrawValue(g, color);
+  // DrawValue(g, color);
 }
 
 void RCSlider::DrawWidget(IGraphics& g, WidgetColors color)
 {
-  const float border_width = mStyle.drawFrame ? mStyle.frameThickness : 0.f;
-  if (border_width)
-  {
-    const IRECT borderBounds = mRECT.GetPadded(-(border_width * .5f));
-    g.DrawRect(color.GetBorderColor(), borderBounds, &mBlend, border_width);
-  }
-
-  const IRECT contentBounds = mRECT.GetPadded(-border_width);
+  const float borderWidth = mStyle.drawFrame ? mStyle.frameThickness : 0.f;
+  const IRECT contentBounds = mRECT.GetPadded(-borderWidth);
   IRECT valueBounds;
   IRECT handleBounds;
+  IRECT textBounds;
   EDirection fracDirection;
-  const float halfHandleSize = mHandleSize * .5f;
   const double pct = GetValue();
   switch (mDirectionType)
   {
@@ -119,30 +115,56 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColors color)
     handleBounds = valueBounds.FracRect(fracDirection, 0.0, pct >= .5);
     break;
   }
-  g.FillRect(color.GetColor(), valueBounds, &mBlend);
 
-  if (mHandleSize > 0.f && pct != 0. && pct != 1.)
-  {
-    switch (fracDirection)
-    {
-    case EDirection::Horizontal:
-      handleBounds = handleBounds.GetHPadded(halfHandleSize);
-      break;
-    case EDirection::Vertical:
-      handleBounds = handleBounds.GetVPadded(halfHandleSize);
-      break;
-    }
-    g.FillRect(color.GetBorderColor(), handleBounds, &mBlend);
-  }
+  DrawBorder(g, color, mRECT, borderWidth);
+  g.FillRect(color.GetColor(), valueBounds, &mBlend);
+  DrawHandle(g, color, handleBounds, fracDirection, pct);
+  DrawValueText(g, color, contentBounds, fracDirection, pct);
 }
 
-void RCSlider::DrawValue(IGraphics& g, WidgetColors color)
+void RCSlider::DrawBorder(IGraphics& g, WidgetColors color, IRECT bounds, float borderWidth)
+{
+  if (!borderWidth)
+    return;
+
+  const IRECT borderBounds = mRECT.GetPadded(-(borderWidth * .5f));
+  g.DrawRect(color.GetBorderColor(), borderBounds, &mBlend, borderWidth);
+}
+
+void RCSlider::DrawHandle(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct)
+{
+  if (!mHandleSize || !pct || pct == 1.)
+    return;
+
+  const float halfHandleSize = mHandleSize * .5f;
+  switch (dir)
+  {
+  case EDirection::Horizontal:
+    bounds = bounds.GetHPadded(halfHandleSize);
+    break;
+  case EDirection::Vertical:
+    bounds = bounds.GetVPadded(halfHandleSize);
+    break;
+  }
+  g.FillRect(color.GetBorderColor(), bounds, &mBlend);
+}
+
+void RCSlider::DrawValueText(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct)
 {
   if (!mStyle.showValue)
     return;
 
+  switch (dir)
+  {
+  case EDirection::Horizontal:
+    bounds = bounds.FracRectHorizontal(0.5, pct < 0.5);
+    break;
+  case EDirection::Vertical:
+    bounds = bounds.FracRectVertical(0.5, pct < 0.5);
+    break;
+  }
   const IText& text = mStyle.GetText().WithFGColor(color.GetLabelColor());
-  g.DrawText(text, mValueStr.Get(), mRECT, &mBlend);
+  g.DrawText(text, mValueStr.Get(), bounds, &mBlend);
 }
 
 void RCSlider::OnResize()
