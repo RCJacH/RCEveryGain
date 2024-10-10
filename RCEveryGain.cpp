@@ -156,20 +156,35 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // Trim Section
 
-    // const IRECT trim_inner = trim.GetHPadded(-4.);
-    // const IRECT trim_side = trim_inner.GetGridCell(0, 2, 3);
-    // const IRECT trim_mid = trim_inner.GetGridCell(1, 2, 3);
-    // const IRECT trim_label = trim_inner.GetGridCell(2, 2, 3);
-    // const IRECT trim_left = trim_inner.GetGridCell(3, 2, 3);
-    // const IRECT trim_master = trim_inner.GetGridCell(4, 2, 3);
-    // const IRECT trim_right = trim_inner.GetGridCell(5, 2, 3);
+    const IRECT trim_header = trim.GetFromLeft(24.f);
+    const IRECT trim_inner = trim.GetReducedFromLeft(24.f).GetVPadded(-4.f);
+    const IRECT trim_l_lane = trim_inner.SubRectVertical(5, 0).GetVPadded(-2.f);
+    const IRECT trim_r_lane = trim_inner.SubRectVertical(5, 1).GetVPadded(-2.f);
+    const IRECT trim_m_lane = trim_inner.SubRectVertical(5, 2).GetVPadded(-2.f);
+    const IRECT trim_s_lane = trim_inner.SubRectVertical(5, 3).GetVPadded(-2.f);
+    const IRECT trim_g_lane = trim_inner.SubRectVertical(5, 4).GetVPadded(-2.f);
+    const IRECT trim_l_control = trim_l_lane.GetReducedFromRight(24.f);
+    const IRECT trim_r_control = trim_r_lane.GetReducedFromRight(24.f);
+    const IRECT trim_m_control = trim_m_lane.GetReducedFromRight(24.f);
+    const IRECT trim_s_control = trim_s_lane.GetReducedFromRight(24.f);
+    const IRECT trim_g_control = trim_g_lane.GetReducedFromRight(24.f);
+    const IRECT trim_l_label = trim_l_lane.GetFromRight(24.f);
+    const IRECT trim_r_label = trim_r_lane.GetFromRight(24.f);
+    const IRECT trim_m_label = trim_m_lane.GetFromRight(24.f);
+    const IRECT trim_s_label = trim_s_lane.GetFromRight(24.f);
+    const IRECT trim_g_label = trim_g_lane.GetFromRight(24.f);
 
-    // const IVStyle trim_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE)).WithValueText(DEFAULT_VALUE_TEXT.WithSize(12.0).WithFGColor(COLOR_WHITE));
-    // pGraphics->AttachControl(new IVKnobControl(trim_mid.GetPadded(-8.), kTrimMid, "", trim_style));
-    // pGraphics->AttachControl(new IVKnobControl(trim_master.GetPadded(-8.), kTrimMaster, "", trim_style));
-    // pGraphics->AttachControl(new IVKnobControl(trim_left.GetPadded(-8.), kTrimLeft, "", trim_style));
-    // pGraphics->AttachControl(new IVKnobControl(trim_side.GetPadded(-8.), kTrimSide, "", trim_style));
-    // pGraphics->AttachControl(new IVKnobControl(trim_right.GetPadded(-8.), kTrimRight, "", trim_style));
+    pGraphics->AttachControl(new RCLabel(trim_header, "TRIM", EDirection::Vertical, header_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(trim_l_label, "L", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_r_label, "R", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_m_label, "M", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_s_label, "S", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_g_label, "G", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCSlider(trim_l_control, kTrimLeft, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(trim_r_control, kTrimRight, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(trim_m_control, kTrimMid, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(trim_s_control, kTrimSide, "", RCSlider::HorizontalSplit, shift_style));
+    pGraphics->AttachControl(new RCSlider(trim_g_control, kTrimMaster, "", RCSlider::HorizontalSplit, shift_style));
   };
 #endif
 }
