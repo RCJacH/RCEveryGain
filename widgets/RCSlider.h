@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IControl.h"
 #include "IControls.h"
 #include "IGraphics.h"
@@ -38,7 +40,7 @@ public:
            int paramIdx = kNoParameter,
            const char* label = "",
            DirectionType dir = DirectionType::Horizontal,
-           const RCStyle& style = RC_DEFAULT_STYLE,
+           const RCStyle& style = DEFAULT_RCSTYLE,
            bool valueIsEditable = false,
            double gearing = 1.0);
 
@@ -46,7 +48,7 @@ public:
            IActionFunction aF,
            const char* label = "",
            DirectionType dir = DirectionType::Horizontal,
-           const RCStyle& style = RC_DEFAULT_STYLE,
+           const RCStyle& style = DEFAULT_RCSTYLE,
            bool valueIsEditable = false,
            double gearing = 1.0);
 
@@ -64,7 +66,7 @@ public:
 
 protected:
   DirectionType mDirectionType;
-  RCStyle mStyle = RC_DEFAULT_STYLE;
+  RCStyle mStyle = DEFAULT_RCSTYLE;
   WDL_String mValueStr;
 };
 

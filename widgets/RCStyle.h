@@ -1,4 +1,5 @@
-#include "IControl.h"
+#pragma once
+
 #include "IGraphicsConstants.h"
 #include "widgets/Color.h"
 
@@ -120,7 +121,7 @@ struct RCStyle
   };
 };
 
-const RCStyle RC_DEFAULT_STYLE = RCStyle();
+const RCStyle DEFAULT_RCSTYLE = RCStyle();
 
 END_IGRAPHICS_NAMESPACE
 END_IPLUG_NAMESPACE

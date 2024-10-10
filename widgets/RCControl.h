@@ -1,3 +1,5 @@
+#pragma once
+
 #include "IControl.h"
 #include "IControls.h"
 #include "IGraphics.h"
