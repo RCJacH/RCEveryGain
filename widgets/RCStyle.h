@@ -33,8 +33,6 @@ struct RCStyle
   bool showValue = DEFAULT_SHOW_VALUE;
   bool drawFrame = DEFAULT_DRAW_FRAME;
   Color::HSLA baseColor = Color::HSLA();
-  char* mFont = nullptr;
-  float valueTextSize = DEFAULT_TEXT_SIZE;
   IText valueText = DEFAULT_VALUE_TEXT;
   float frameThickness = 2.f;
   WidgetColors mColors;
@@ -60,7 +58,6 @@ struct RCStyle
     , showValue(showValue)
     , drawFrame(drawFrame)
     , baseColor(baseColor)
-    , valueTextSize(valueTextSize)
     , mColors(WidgetColors(baseColor))
     , mHoverColors(mColors.HoverColors())
     , mPressColors(mColors.PressColors())
@@ -78,7 +75,6 @@ struct RCStyle
   RCStyle WithValueTextSize(float newSize) const
   {
     RCStyle newStyle = *this;
-    newStyle.valueTextSize = newSize;
     newStyle.valueText = valueText.WithSize(newSize);
     return newStyle;
   }
@@ -110,7 +106,7 @@ struct RCStyle
     return newStyle;
   }
 
-  IText& GetText() const { return valueText.WithSize(valueTextSize); }
+  IText GetText() const { return valueText; }
 
   WidgetColors GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false)
   {
