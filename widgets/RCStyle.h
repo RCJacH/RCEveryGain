@@ -33,7 +33,7 @@ struct RCStyle
   bool showValue = DEFAULT_SHOW_VALUE;
   bool drawFrame = DEFAULT_DRAW_FRAME;
   Color::HSLA baseColor = Color::HSLA();
-  IText valueText = DEFAULT_VALUE_TEXT;
+  IText valueText = DEFAULT_VALUE_TEXT.WithVAlign(EVAlign::Middle);
   float frameThickness = 2.f;
   WidgetColors mColors;
   WidgetColors mHoverColors;
