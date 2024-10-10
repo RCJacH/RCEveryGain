@@ -132,8 +132,8 @@ struct MouseControl
 class RCControl : public IControl
 {
 public:
-  RCControl(const IRECT& bounds, int paramIdx)
-    : IControl(bounds, paramIdx) {};
+  RCControl(const IRECT& bounds, int paramIdx, IActionFunction aF = nullptr)
+    : IControl(bounds, paramIdx, aF) {};
   RCControl(const IRECT& bounds, IActionFunction aF = nullptr)
     : IControl(bounds, aF) {};
 
