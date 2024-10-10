@@ -103,24 +103,24 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // Fader Section
     const IRECT fader_header = fader.GetFromLeft(24.f);
     const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(4.f).GetReducedFromRight(2.f);
-    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.618f, true);
+    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.382f, true);
     const IRECT fader_fader_lane = fader_inner.GetReducedFromRight(fader_non_fader.W() + 2.f);
-    const IRECT fader_curve_lane = fader_non_fader.SubRectHorizontal(2, 0).GetHPadded(-2.f);
-    const IRECT fader_smooth_lane = fader_non_fader.SubRectHorizontal(2, 1).GetReducedFromLeft(2.f);
-    const IRECT fader_control_fader = fader_fader_lane.FracRectVertical(.88f, true);
-    const IRECT fader_control_curve = fader_curve_lane.FracRectVertical(.88f, true);
-    const IRECT fader_control_smooth = fader_smooth_lane.FracRectVertical(.88f, true);
-    const IRECT fader_label_fader = fader_fader_lane.FracRectVertical(.12f);
-    const IRECT fader_label_curve = fader_curve_lane.FracRectVertical(.12f);
-    const IRECT fader_label_smooth = fader_smooth_lane.FracRectVertical(.12f);
+    const IRECT fader_curve_lane = fader_non_fader.GetReducedFromLeft(2.f).SubRectVertical(2, 0);
+    const IRECT fader_smooth_lane = fader_non_fader.GetReducedFromLeft(2.f).SubRectVertical(2, 1);
+    const IRECT fader_fader_label = fader_fader_lane.GetFromBottom(24.f);
+    const IRECT fader_curve_label = fader_curve_lane.GetFromBottom(24.f);
+    const IRECT fader_smooth_label = fader_smooth_lane.GetFromBottom(24.f);
+    const IRECT fader_fader_control = fader_fader_lane.GetReducedFromBottom(24.f);
+    const IRECT fader_curve_control = fader_curve_lane.GetReducedFromBottom(24.f);
+    const IRECT fader_smooth_control = fader_smooth_lane.GetReducedFromBottom(24.f);
 
     pGraphics->AttachControl(new RCLabel(fader_header, "FADER", EDirection::Vertical, header_style, 1.6f));
-    pGraphics->AttachControl(new RCLabel(fader_label_fader, "VOLUME", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(fader_label_curve, "CURVE", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(fader_label_smooth, "SMOOTH", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCSlider(fader_control_fader, kFader, "", RCSlider::Vertical, shift_style));
-    pGraphics->AttachControl(new RCSlider(fader_control_curve, kFaderCurve, "", RCSlider::Vertical, shift_style));
-    pGraphics->AttachControl(new RCSlider(fader_control_smooth, kFaderSmoothing, "", RCSlider::Vertical, shift_style));
+    pGraphics->AttachControl(new RCLabel(fader_fader_label, "VOLUME", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_curve_label, "CURVE", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_smooth_label, "SMOOTH", EDirection::Horizontal, shift_label_style));
+    pGraphics->AttachControl(new RCSlider(fader_fader_control, kFader, "", RCSlider::Vertical, shift_style));
+    pGraphics->AttachControl(new RCSlider(fader_curve_control, kFaderCurve, "", RCSlider::Vertical, shift_style));
+    pGraphics->AttachControl(new RCSlider(fader_smooth_control, kFaderSmoothing, "", RCSlider::Vertical, shift_style));
 
     // Gain Section
 
