@@ -55,10 +55,10 @@ public:
   virtual ~RCSlider() {}
 
   virtual void Draw(IGraphics& g);
-  virtual void DrawWidget(IGraphics& g, WidgetColors color);
-  virtual void DrawBorder(IGraphics& g, WidgetColors color, IRECT bounds, float borderWidth);
-  virtual void DrawHandle(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct);
-  virtual void DrawValueText(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct);
+  virtual void DrawWidget(IGraphics& g, WidgetColorSet color);
+  virtual void DrawBorder(IGraphics& g, WidgetColorSet color, IRECT bounds, float borderWidth);
+  virtual void DrawHandle(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct);
+  virtual void DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct);
 
   void OnResize() override;
   void SetDirty(bool push, int valIdx = kNoValIdx) override;
@@ -90,10 +90,9 @@ void RCSlider::Draw(IGraphics& g)
 {
   auto color = mStyle.GetColors(mMouseControl.IsHovering(), mMouseControl.IsLDown(), IsDisabled());
   DrawWidget(g, color);
-  // DrawValue(g, color);
 }
 
-void RCSlider::DrawWidget(IGraphics& g, WidgetColors color)
+void RCSlider::DrawWidget(IGraphics& g, WidgetColorSet color)
 {
   const float borderWidth = mStyle.drawFrame ? mStyle.frameThickness : 0.f;
   const IRECT contentBounds = mRECT.GetPadded(-borderWidth);
@@ -124,7 +123,7 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColors color)
   DrawValueText(g, color, contentBounds, fracDirection, pct);
 }
 
-void RCSlider::DrawBorder(IGraphics& g, WidgetColors color, IRECT bounds, float borderWidth)
+void RCSlider::DrawBorder(IGraphics& g, WidgetColorSet color, IRECT bounds, float borderWidth)
 {
   if (!borderWidth)
     return;
@@ -133,7 +132,7 @@ void RCSlider::DrawBorder(IGraphics& g, WidgetColors color, IRECT bounds, float 
   g.DrawRect(color.GetBorderColor(), borderBounds, &mBlend, borderWidth);
 }
 
-void RCSlider::DrawHandle(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct)
+void RCSlider::DrawHandle(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct)
 {
   if (!mHandleSize || !pct || pct == 1.)
     return;
@@ -151,7 +150,7 @@ void RCSlider::DrawHandle(IGraphics& g, WidgetColors color, IRECT bounds, EDirec
   g.FillRect(color.GetBorderColor(), bounds, &mBlend);
 }
 
-void RCSlider::DrawValueText(IGraphics& g, WidgetColors color, IRECT bounds, EDirection dir, double pct)
+void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct)
 {
   if (!mStyle.showValue)
     return;

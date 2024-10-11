@@ -6,11 +6,11 @@
 BEGIN_IPLUG_NAMESPACE
 BEGIN_IGRAPHICS_NAMESPACE
 
-struct WidgetColors
+struct WidgetColorSet
 {
-  WidgetColors() {};
+  WidgetColorSet() {};
 
-  WidgetColors(Color::HSLA color)
+  WidgetColorSet(Color::HSLA color)
     : mainColor(color)
     , borderColor(color.Scaled(0., -.1f, .2f))
     , labelColor(color.Scaled(0., -.1f, .5f)) {};
@@ -19,13 +19,72 @@ struct WidgetColors
   Color::HSLA borderColor;
   Color::HSLA labelColor;
 
-  IColor WidgetColors::GetColor() { return mainColor.AsIColor(); }
-  IColor WidgetColors::GetBorderColor() { return borderColor.AsIColor(); }
-  IColor WidgetColors::GetLabelColor() { return labelColor.AsIColor(); }
+  IColor WidgetColorSet::GetColor() { return mainColor.AsIColor(); }
+  IColor WidgetColorSet::GetBorderColor() { return borderColor.AsIColor(); }
+  IColor WidgetColorSet::GetLabelColor() { return labelColor.AsIColor(); }
+};
 
-  WidgetColors WidgetColors::HoverColors() { return WidgetColors(mainColor.Adjusted(0, -.05f, .05f)); }
-  WidgetColors WidgetColors::PressColors() { return WidgetColors(mainColor.Adjusted(0, -.1f, .1f)); }
-  WidgetColors WidgetColors::DisabledColors() { return WidgetColors(mainColor.Adjusted(-90, -.3f, -.2f)); }
+struct WidgetInteractionColors
+{
+  WidgetInteractionColors() {};
+
+  WidgetInteractionColors(Color::HSLA color, bool isDisabled = false)
+    : normalColors(WidgetColorSet(color))
+    , hoverColors(WidgetColorSet(color.Adjusted(0, -.05f, .05f)))
+    , pressColors(WidgetColorSet(color.Adjusted(0, -.1f, .1f)))
+  {
+    if (isDisabled)
+      return;
+
+    const WidgetInteractionColors disabled = WidgetInteractionColors(color.Adjusted(-90, -.3f, -.2f), true);
+    disabledColors = disabled.normalColors;
+    disabledHoverColors = disabled.hoverColors;
+    disabledPressColors = disabled.pressColors;
+  };
+
+  WidgetColorSet normalColors;
+  WidgetColorSet hoverColors;
+  WidgetColorSet pressColors;
+  WidgetColorSet disabledColors;
+  WidgetColorSet disabledHoverColors;
+  WidgetColorSet disabledPressColors;
+
+  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false)
+  {
+    if (isDisabled)
+    {
+      if (isDown)
+        return disabledPressColors;
+      if (isHovered)
+        return disabledHoverColors;
+      return disabledColors;
+    }
+    if (isDown)
+      return pressColors;
+    if (isHovered)
+      return hoverColors;
+    return normalColors;
+  };
+};
+
+struct WidgetColors
+{
+  int mColorCount;
+  WidgetInteractionColors* mColors{};
+
+  WidgetColors() {};
+  WidgetColors(Color::HSLA color, int count = 1, int hueRange = 0)
+    : mColorCount{count}
+    , mColors{new WidgetInteractionColors[static_cast<std::size_t>(count)]{}}
+  {
+    int dHue = static_cast<int>(floor(hueRange / count));
+    for (int i = 0; i < count; i++)
+    {
+      mColors[i] = WidgetInteractionColors(color.Adjusted(dHue * i));
+    }
+  };
+
+  WidgetInteractionColors Get(int index = 0) { return mColors[index % mColorCount]; };
 };
 
 struct RCStyle
@@ -37,9 +96,10 @@ struct RCStyle
   IText valueText = DEFAULT_VALUE_TEXT.WithVAlign(EVAlign::Middle);
   float frameThickness = 2.f;
   WidgetColors mColors;
-  WidgetColors mHoverColors;
-  WidgetColors mPressColors;
-  WidgetColors mDisabledColors;
+  // WidgetColors mColors;
+  // WidgetColors mHoverColors;
+  // WidgetColors mPressColors;
+  // WidgetColors mDisabledColors;
 
   /** Create a new RCStyle to configure common styling for IVControls
    * @param showValue Display value text
@@ -59,10 +119,7 @@ struct RCStyle
     , showValue(showValue)
     , drawFrame(drawFrame)
     , baseColor(baseColor)
-    , mColors(WidgetColors(baseColor))
-    , mHoverColors(mColors.HoverColors())
-    , mPressColors(mColors.PressColors())
-    , mDisabledColors(mColors.DisabledColors())
+    , mColors(baseColor)
   {
     valueText = valueText.WithFont(fontID).WithSize(valueTextSize);
   }
@@ -85,13 +142,10 @@ struct RCStyle
     newStyle.hideCursor = hide;
     return newStyle;
   }
-  RCStyle WithColor(Color::HSLA newColor) const
+  RCStyle WithColor(Color::HSLA newColor, int count = 1, int hueRange = 0) const
   {
     RCStyle newStyle = *this;
-    newStyle.mColors = WidgetColors(newColor);
-    newStyle.mHoverColors = newStyle.mColors.HoverColors();
-    newStyle.mPressColors = newStyle.mColors.PressColors();
-    newStyle.mDisabledColors = newStyle.mColors.DisabledColors();
+    newStyle.mColors = WidgetColors(newColor, count, hueRange);
     return newStyle;
   }
   RCStyle WithFrameThickness(float v) const
@@ -109,16 +163,7 @@ struct RCStyle
 
   IText GetText() const { return valueText; }
 
-  WidgetColors GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false)
-  {
-    if (isDisabled)
-      return mDisabledColors;
-    if (isDown)
-      return mPressColors;
-    if (isHovered)
-      return mHoverColors;
-    return mColors;
-  };
+  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false, int index = 0) { return mColors.Get(index).GetColors(isHovered, isDown, isDisabled); };
 };
 
 const RCStyle DEFAULT_RCSTYLE = RCStyle();
