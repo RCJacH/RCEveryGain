@@ -5,6 +5,7 @@
 #include "Widgets/RCLabel.h"
 #include "Widgets/RCSlider.h"
 #include "Widgets/RCStyle.h"
+#include "widgets/RCTabSwitchControl.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
 
@@ -94,7 +95,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCSlider(shift_control_macro, kShiftMacro, "", RCSlider::HorizontalSplit, shift_style));
     pGraphics->AttachControl(new RCSlider(shift_control_micro, kShiftMicro, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(shift_control_size, kShiftSize, "", RCSlider::Horizontal, shift_style));
+    pGraphics->AttachControl(new RCTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_style));
 
     // const IBitmap shiftSizeSwitchOnPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHON_FN);
     // const IBitmap shiftSizeSwitchOffPNG = pGraphics->LoadBitmap(PNGSHIFTSIZESWITCHOFF_FN);
