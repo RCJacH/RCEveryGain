@@ -31,7 +31,7 @@ struct HSLA
   float mL;
   float mA;
 
-  HSLA HSLA::WithHue(float hue) const
+  HSLA HSLA::WithHue(int hue) const
   {
     HSLA newHSLA = *this;
     newHSLA.mH = hue;

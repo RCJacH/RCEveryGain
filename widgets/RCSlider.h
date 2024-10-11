@@ -107,13 +107,13 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColorSet color)
   case DirectionType::Vertical:
     fracDirection = (mDirectionType == DirectionType::Horizontal) ? EDirection::Horizontal : EDirection::Vertical;
     valueBounds = contentBounds.FracRect(fracDirection, pct);
-    handleBounds = valueBounds.FracRect(fracDirection, 0.0, true);
+    handleBounds = valueBounds.FracRect(fracDirection, 0.f, true);
     break;
   case DirectionType::HorizontalSplit:
   case DirectionType::VerticalSplit:
     fracDirection = (mDirectionType == DirectionType::HorizontalSplit) ? EDirection::Horizontal : EDirection::Vertical;
-    valueBounds = contentBounds.FracRect(fracDirection, 0.5, pct >= .5).FracRect(fracDirection, abs(0.5 - pct) * 2., pct < .5);
-    handleBounds = valueBounds.FracRect(fracDirection, 0.0, pct >= .5);
+    valueBounds = contentBounds.FracRect(fracDirection, .5f, pct >= .5).FracRect(fracDirection, abs(.5f - pct) * 2.f, pct < .5);
+    handleBounds = valueBounds.FracRect(fracDirection, 0.f, pct >= .5);
     break;
   }
 
@@ -158,10 +158,10 @@ void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, E
   switch (dir)
   {
   case EDirection::Horizontal:
-    bounds = bounds.FracRectHorizontal(0.5, pct < 0.5);
+    bounds = bounds.FracRectHorizontal(.5f, pct < .5);
     break;
   case EDirection::Vertical:
-    bounds = bounds.FracRectVertical(0.5, pct < 0.5);
+    bounds = bounds.FracRectVertical(.5f, pct < .5);
     break;
   }
   const IText& text = mStyle.GetText().WithFGColor(color.GetLabelColor());
