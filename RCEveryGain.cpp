@@ -35,20 +35,22 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
   mMakeGraphicsFunc = [&]() { return MakeGraphics(*this, PLUG_WIDTH, PLUG_HEIGHT, PLUG_FPS, GetScaleForScreen(PLUG_WIDTH, PLUG_HEIGHT)); };
 
   mLayoutFunc = [&](IGraphics* pGraphics) {
+    auto AddPanelBG = [&](const IRECT bounds, const Color::HSLA color) { pGraphics->AttachControl(new IPanelControl(bounds, color.Scaled(0, -.6f, -.05f).AsIColor())); };
+    auto GetSectionLabelColor = [&](const Color::HSLA color) { return color.Scaled(0, -.8f, .6f); };
+
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
-    pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
     pGraphics->LoadFont("FiraSans-Regular", FIRASANS_REGULAR_FN);
     pGraphics->LoadFont("FiraSans-Medium", FIRASANS_MEDIUM_FN);
-    const IColor bgIColor = IColor::FromHSLA(.5972f, .12f, .3f);
-    const Color::HSLA main_color = Color::HSLA(214, .32f, .3f);
+    const Color::HSLA main_color = Color::HSLA(213, .36f, .32f);
     const RCStyle main_style = DEFAULT_RCSTYLE.WithColor(main_color).WithValueTextSize(18.f).WithValueTextFont("FiraSans-Regular");
-    const Color::HSLA header_color = main_color.Scaled(0, -.8, .3);
+    const Color::HSLA header_color = main_color.Scaled(0, -.8f, .3f);
     const RCStyle header_style = main_style.WithColor(header_color).WithDrawFrame(false).WithValueTextSize(16.f).WithValueTextFont("FiraSans-Medium");
+    pGraphics->AttachPanelBackground(main_color.Scaled(0, -.55f, -.05f).AsIColor());
 
     // General Layout
     const IRECT content = pGraphics->GetBounds();
-    const IRECT header = content.FracRectVertical(0.382f * 0.2f, true);
+    const IRECT header = content.FracRectVertical(0.382f * 0.382 * 0.618f, true);
     const IRECT controls = content.FracRectHorizontal(0.618f + 0.382f * 0.382f).GetReducedFromTop(header.H());
     const IRECT meter = content.GetReducedFromTop(header.H()).GetReducedFromLeft(controls.W());
     const IRECT shift = controls.FracRectVertical(0.3f, true);
@@ -60,19 +62,20 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // TITLE Section
     const IBitmap titleBitmap = pGraphics->LoadBitmap(PNGTITLE_FN);
-    pGraphics->AttachControl(new IBButtonControl(header.GetReducedFromLeft(24.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {
-      pCaller->SetAnimation(
-        [](IControl* pCaller) {
-          auto progress = pCaller->GetAnimationProgress();
-          if (progress > 1.)
-          {
-            pCaller->OnEndAnimation();
-            return;
-          }
-          pCaller->SetValue(Clip(progress + .5, 0., 1.));
-        },
-        100);
-    }));
+    pGraphics->AttachControl(
+      new IBButtonControl(header.GetReducedFromLeft(24.f).GetReducedFromTop(8.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {
+        pCaller->SetAnimation(
+          [](IControl* pCaller) {
+            auto progress = pCaller->GetAnimationProgress();
+            if (progress > 1.)
+            {
+              pCaller->OnEndAnimation();
+              return;
+            }
+            pCaller->SetValue(Clip(progress + .5, 0., 1.));
+          },
+          100);
+      }));
     const IRECT meter_screens = meter.GetPadded(-4.f - 12.f * 1.5f).GetReducedFromBottom(24.f).GetReducedFromLeft(2.f);
     const IRECT input_meter = meter_screens.GetReducedFromRight((meter_screens.W() * .5f) - 4.f);
     const IRECT output_meter = meter_screens.GetReducedFromLeft((meter_screens.W() * .5f) - 4.f);
@@ -85,25 +88,27 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // Shift Section
     const IRECT shift_header = shift.GetFromLeft(24.f);
-    const IRECT shift_inner = shift.GetReducedFromLeft(24.f).GetVPadded(-6.f - 6.f * 1.6f);
+    const IRECT shift_inner = shift.GetReducedFromLeft(24.f).GetVPadded(-8.f);
     const IRECT shift_lane_macro = shift_inner.SubRectVertical(3, 0).GetReducedFromBottom(2.f);
     const IRECT shift_lane_micro = shift_inner.SubRectVertical(3, 1).GetVPadded(-2.f);
     const IRECT shift_lane_size = shift_inner.SubRectVertical(3, 2).GetReducedFromTop(2.f);
     const IRECT shift_control_macro = shift_lane_macro.FracRectHorizontal(.88f);
     const IRECT shift_control_micro = shift_lane_micro.FracRectHorizontal(.88f);
     const IRECT shift_control_size = shift_lane_size.FracRectHorizontal(.88f);
-    const IRECT shift_label_macro = shift_lane_macro.FracRectHorizontal(.12f, true);
-    const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.12f, true);
-    const IRECT shift_label_size = shift_lane_size.FracRectHorizontal(.12f, true);
+    const IRECT shift_label_macro = shift_lane_macro.FracRectHorizontal(.1f, true);
+    const IRECT shift_label_micro = shift_lane_micro.FracRectHorizontal(.1f, true);
+    const IRECT shift_label_size = shift_lane_size.FracRectHorizontal(.1f, true);
     const IRECT shift_bulbs_macro = shift_control_macro.GetHPadded(-shift_control_macro.H());
     const IRECT shift_macro_minus_button = shift_control_macro.GetFromLeft(shift_control_macro.H());
     const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
-    const Color::HSLA shift_color = Color::HSLA(0, .5f, .5f);
+    const Color::HSLA shift_color = main_color.Adjusted(120, -.05f, .05f);
     const RCStyle shift_style = main_style.WithColor(shift_color);
-    const RCStyle shift_label_style = header_style;
+    const RCStyle shift_header_style = header_style.WithColor(GetSectionLabelColor(shift_color));
+    const RCStyle shift_label_style = shift_header_style.WithValueTextHAlign(EAlign::Near);
 
     pGraphics->EnableMouseOver(true);
-    pGraphics->AttachControl(new RCLabel(shift_header, "SHIFT", EDirection::Vertical, header_style, 1.6f));
+    AddPanelBG(shift, shift_color);
+    pGraphics->AttachControl(new RCLabel(shift_header, "SHIFT", EDirection::Vertical, shift_header_style, 1.6f));
     pGraphics->AttachControl(new RCLabel(shift_label_macro, "MACRO", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCLabel(shift_label_micro, "MICRO", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
@@ -113,7 +118,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // Fader Section
     const IRECT fader_header = fader.GetFromLeft(24.f);
-    const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(4.f).GetReducedFromRight(2.f);
+    const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(8.f).GetReducedFromRight(8.f);
     const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.382f, true);
     const IRECT fader_fader_lane = fader_inner.GetReducedFromRight(fader_non_fader.W() + 2.f);
     const IRECT fader_curve_lane = fader_non_fader.GetReducedFromLeft(2.f).SubRectVertical(2, 0);
@@ -124,19 +129,23 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT fader_fader_control = fader_fader_lane.GetReducedFromBottom(24.f);
     const IRECT fader_curve_control = fader_curve_lane.GetReducedFromBottom(24.f);
     const IRECT fader_smooth_control = fader_smooth_lane.GetReducedFromBottom(24.f);
+    const Color::HSLA fader_color = main_color.Adjusted(-90, -.05f, .05f);
+    const RCStyle fader_style = main_style.WithColor(fader_color);
+    const RCStyle fader_label_style = header_style.WithColor(GetSectionLabelColor(fader_color));
 
-    pGraphics->AttachControl(new RCLabel(fader_header, "FADER", EDirection::Vertical, header_style, 1.6f));
-    pGraphics->AttachControl(new RCLabel(fader_fader_label, "VOLUME", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(fader_curve_label, "CURVE", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(fader_smooth_label, "SMOOTH", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCSlider(fader_fader_control, kFader, "", RCSlider::Vertical, shift_style));
-    pGraphics->AttachControl(new RCSlider(fader_curve_control, kFaderCurve, "", RCSlider::Vertical, shift_style));
-    pGraphics->AttachControl(new RCSlider(fader_smooth_control, kFaderSmoothing, "", RCSlider::Vertical, shift_style));
+    AddPanelBG(fader, fader_color);
+    pGraphics->AttachControl(new RCLabel(fader_header, "FADER", EDirection::Vertical, fader_label_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(fader_fader_label, "VOLUME", EDirection::Horizontal, fader_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_curve_label, "CURVE", EDirection::Horizontal, fader_label_style));
+    pGraphics->AttachControl(new RCLabel(fader_smooth_label, "SMOOTH", EDirection::Horizontal, fader_label_style));
+    pGraphics->AttachControl(new RCSlider(fader_fader_control, kFader, "", RCSlider::Vertical, fader_style));
+    pGraphics->AttachControl(new RCSlider(fader_curve_control, kFaderCurve, "", RCSlider::Vertical, fader_style));
+    pGraphics->AttachControl(new RCSlider(fader_smooth_control, kFaderSmoothing, "", RCSlider::Vertical, fader_style));
 
     // Gain Section
 
     const IRECT gain_header = gain.GetFromRight(24.f);
-    const IRECT gain_inner = gain.GetReducedFromRight(24.f).GetVPadded(-4.f);
+    const IRECT gain_inner = gain.GetReducedFromRight(24.f).GetVPadded(-8.f);
     const IRECT gain_l_lane = gain_inner.SubRectVertical(5, 0).GetVPadded(-2.f);
     const IRECT gain_r_lane = gain_inner.SubRectVertical(5, 1).GetVPadded(-2.f);
     const IRECT gain_m_lane = gain_inner.SubRectVertical(5, 2).GetVPadded(-2.f);
@@ -152,23 +161,27 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT gain_m_label = gain_m_lane.GetFromLeft(24.f);
     const IRECT gain_s_label = gain_s_lane.GetFromLeft(24.f);
     const IRECT gain_g_label = gain_g_lane.GetFromLeft(24.f);
+    const Color::HSLA gain_color = main_color.Adjusted(150, -.05f, .05f);
+    const RCStyle gain_style = main_style.WithColor(gain_color);
+    const RCStyle gain_label_style = header_style.WithColor(GetSectionLabelColor(gain_color));
 
-    pGraphics->AttachControl(new RCLabel(gain_header, "GAIN", EDirection::Vertical, header_style, 1.6f));
-    pGraphics->AttachControl(new RCLabel(gain_l_label, "L", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(gain_r_label, "R", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(gain_m_label, "M", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(gain_s_label, "S", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(gain_g_label, "G", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCSlider(gain_l_control, kGainLeft, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(gain_r_control, kGainRight, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(gain_m_control, kGainMid, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(gain_s_control, kGainSide, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(gain_g_control, kGainMaster, "", RCSlider::HorizontalSplit, shift_style));
+    AddPanelBG(gain, gain_color);
+    pGraphics->AttachControl(new RCLabel(gain_header, "GAIN", EDirection::Vertical, gain_label_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(gain_l_label, "L", EDirection::Horizontal, gain_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_r_label, "R", EDirection::Horizontal, gain_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_m_label, "M", EDirection::Horizontal, gain_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_s_label, "S", EDirection::Horizontal, gain_label_style));
+    pGraphics->AttachControl(new RCLabel(gain_g_label, "G", EDirection::Horizontal, gain_label_style));
+    pGraphics->AttachControl(new RCSlider(gain_l_control, kGainLeft, "", RCSlider::HorizontalSplit, gain_style));
+    pGraphics->AttachControl(new RCSlider(gain_r_control, kGainRight, "", RCSlider::HorizontalSplit, gain_style));
+    pGraphics->AttachControl(new RCSlider(gain_m_control, kGainMid, "", RCSlider::HorizontalSplit, gain_style));
+    pGraphics->AttachControl(new RCSlider(gain_s_control, kGainSide, "", RCSlider::HorizontalSplit, gain_style));
+    pGraphics->AttachControl(new RCSlider(gain_g_control, kGainMaster, "", RCSlider::HorizontalSplit, gain_style));
 
     // Trim Section
 
     const IRECT trim_header = trim.GetFromLeft(24.f);
-    const IRECT trim_inner = trim.GetReducedFromLeft(24.f).GetVPadded(-4.f);
+    const IRECT trim_inner = trim.GetReducedFromLeft(24.f).GetVPadded(-8.f);
     const IRECT trim_l_lane = trim_inner.SubRectVertical(5, 0).GetVPadded(-2.f);
     const IRECT trim_r_lane = trim_inner.SubRectVertical(5, 1).GetVPadded(-2.f);
     const IRECT trim_m_lane = trim_inner.SubRectVertical(5, 2).GetVPadded(-2.f);
@@ -184,18 +197,22 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT trim_m_label = trim_m_lane.GetFromRight(24.f);
     const IRECT trim_s_label = trim_s_lane.GetFromRight(24.f);
     const IRECT trim_g_label = trim_g_lane.GetFromRight(24.f);
+    const Color::HSLA trim_color = main_color.Adjusted(60, -.05f, .05f);
+    const RCStyle trim_style = main_style.WithColor(trim_color);
+    const RCStyle trim_label_style = header_style.WithColor(GetSectionLabelColor(trim_color));
 
-    pGraphics->AttachControl(new RCLabel(trim_header, "TRIM", EDirection::Vertical, header_style, 1.6f));
-    pGraphics->AttachControl(new RCLabel(trim_l_label, "L", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(trim_r_label, "R", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(trim_m_label, "M", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(trim_s_label, "S", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCLabel(trim_g_label, "G", EDirection::Horizontal, shift_label_style));
-    pGraphics->AttachControl(new RCSlider(trim_l_control, kTrimLeft, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(trim_r_control, kTrimRight, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(trim_m_control, kTrimMid, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(trim_s_control, kTrimSide, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCSlider(trim_g_control, kTrimMaster, "", RCSlider::HorizontalSplit, shift_style));
+    AddPanelBG(trim, trim_color);
+    pGraphics->AttachControl(new RCLabel(trim_header, "TRIM", EDirection::Vertical, trim_label_style, 1.6f));
+    pGraphics->AttachControl(new RCLabel(trim_l_label, "L", EDirection::Horizontal, trim_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_r_label, "R", EDirection::Horizontal, trim_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_m_label, "M", EDirection::Horizontal, trim_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_s_label, "S", EDirection::Horizontal, trim_label_style));
+    pGraphics->AttachControl(new RCLabel(trim_g_label, "G", EDirection::Horizontal, trim_label_style));
+    pGraphics->AttachControl(new RCSlider(trim_l_control, kTrimLeft, "", RCSlider::HorizontalSplit, trim_style));
+    pGraphics->AttachControl(new RCSlider(trim_r_control, kTrimRight, "", RCSlider::HorizontalSplit, trim_style));
+    pGraphics->AttachControl(new RCSlider(trim_m_control, kTrimMid, "", RCSlider::HorizontalSplit, trim_style));
+    pGraphics->AttachControl(new RCSlider(trim_s_control, kTrimSide, "", RCSlider::HorizontalSplit, trim_style));
+    pGraphics->AttachControl(new RCSlider(trim_g_control, kTrimMaster, "", RCSlider::HorizontalSplit, trim_style));
   };
 #endif
 }

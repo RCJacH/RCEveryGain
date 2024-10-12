@@ -143,6 +143,18 @@ struct RCStyle
     newStyle.valueText = valueText.WithFont(fontID);
     return newStyle;
   }
+  RCStyle WithValueTextHAlign(EAlign newAlign) const
+  {
+    RCStyle newStyle = *this;
+    newStyle.valueText = valueText.WithAlign(newAlign);
+    return newStyle;
+  }
+  RCStyle WithValueTextVAlign(EVAlign newAlign) const
+  {
+    RCStyle newStyle = *this;
+    newStyle.valueText = valueText.WithVAlign(newAlign);
+    return newStyle;
+  }
   RCStyle WithHideCursor(bool hide = true) const
   {
     RCStyle newStyle = *this;
