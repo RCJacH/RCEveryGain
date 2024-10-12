@@ -178,7 +178,7 @@ void RCTabSwitchControl::DrawWidget(IGraphics& g)
     const bool isSelected = i == selected;
     const bool isMouseOver = mMouseOverButton == i;
     const bool isDisabled = IsDisabled() || GetStateDisabled(i);
-    const WidgetColorSet color = mStyle.GetColors(!isDisabled && isMouseOver, !isDisabled && (isSelected || isPressed), isDisabled || !isSelected, i);
+    const WidgetColorSet color = mStyle.GetColors(!isDisabled && !isSelected && isMouseOver, !isDisabled && !isSelected && isPressed, isDisabled || !isSelected, i);
 
     DrawButton(g, r, color, isSelected, isPressed, isMouseOver, segment, isDisabled);
 
