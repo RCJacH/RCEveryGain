@@ -114,7 +114,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCSlider(shift_control_macro, kShiftMacro, "", RCSlider::HorizontalSplit, shift_style));
     pGraphics->AttachControl(new RCSlider(shift_control_micro, kShiftMicro, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_style));
+    pGraphics->AttachControl(new RCTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_style.WithValueTextFont("FiraSans-Medium")));
 
     // Fader Section
     const IRECT fader_header = fader.GetFromLeft(24.f);
