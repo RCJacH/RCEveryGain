@@ -13,7 +13,7 @@ struct WidgetColorSet
   WidgetColorSet(Color::HSLA color)
     : mainColor(color)
     , borderColor(color.Scaled(0., -.1f, .2f))
-    , labelColor(color.Scaled(0., -.1f, color.mL >= .45f ? -.5f : .5f)) {};
+    , labelColor(color.Scaled(0., -.1f, color.mL >= .5f ? -.5f : .5f)) {};
 
   Color::HSLA mainColor;
   Color::HSLA borderColor;
