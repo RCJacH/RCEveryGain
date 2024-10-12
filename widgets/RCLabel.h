@@ -36,7 +36,7 @@ void RCLabel::Draw(IGraphics& g)
     if (mStyle.drawFrame)
       g.DrawRect(colors.GetBorderColor(), mRECT, &mBlend, mStyle.frameThickness);
 
-    const IText& text = mText.WithFGColor(colors.GetLabelColor());
+    const IText& text = mText.WithFGColor(colors.GetColor());
     const auto str = mStr.Get();
     const int length = mStr.GetLength();
     IRECT textBounds;
