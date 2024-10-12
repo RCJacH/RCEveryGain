@@ -38,13 +38,13 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
     pGraphics->AttachPanelBackground(IColor::FromHSLA(0.5972, 0.12, 0.3));
     pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
-    // const IBitmap backgroundBitmap = pGraphics->LoadBitmap(PNGBACKGROUND_FN);
-    // pGraphics->AttachBackground(PNGBACKGROUND_FN);
+    pGraphics->LoadFont("FiraSans-Regular", FIRASANS_REGULAR_FN);
+    pGraphics->LoadFont("FiraSans-Medium", FIRASANS_MEDIUM_FN);
     const IColor bgIColor = IColor::FromHSLA(.5972f, .12f, .3f);
     const Color::HSLA main_color = Color::HSLA(214, .32f, .3f);
-    const RCStyle main_style = DEFAULT_RCSTYLE.WithColor(main_color);
-    const Color::HSLA header_color = main_color.Scaled(0, -.8, .6);
-    const RCStyle header_style = main_style.WithColor(header_color).WithDrawFrame(false);
+    const RCStyle main_style = DEFAULT_RCSTYLE.WithColor(main_color).WithValueTextSize(18.f).WithValueTextFont("FiraSans-Regular");
+    const Color::HSLA header_color = main_color.Scaled(0, -.8, .3);
+    const RCStyle header_style = main_style.WithColor(header_color).WithDrawFrame(false).WithValueTextSize(16.f).WithValueTextFont("FiraSans-Medium");
 
     // General Layout
     const IRECT content = pGraphics->GetBounds();
@@ -99,7 +99,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_macro_minus_button = shift_control_macro.GetFromLeft(shift_control_macro.H());
     const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
     const Color::HSLA shift_color = Color::HSLA(0, .5f, .5f);
-    const RCStyle shift_style = main_style.WithValueTextSize(20.f).WithColor(shift_color);
+    const RCStyle shift_style = main_style.WithColor(shift_color);
     const RCStyle shift_label_style = header_style;
 
     pGraphics->EnableMouseOver(true);

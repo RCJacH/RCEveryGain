@@ -136,6 +136,12 @@ struct RCStyle
     newStyle.valueText = valueText.WithSize(newSize);
     return newStyle;
   }
+  RCStyle WithValueTextFont(const char* fontID) const
+  {
+    RCStyle newStyle = *this;
+    newStyle.valueText = valueText.WithFont(fontID);
+    return newStyle;
+  }
   RCStyle WithHideCursor(bool hide = true) const
   {
     RCStyle newStyle = *this;

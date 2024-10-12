@@ -56,6 +56,8 @@
 #define APP_COPY_AUV3 0
 #define APP_SIGNAL_VECTOR_SIZE 64
 
+#define FIRASANS_REGULAR_FN "FiraSans-Regular-Mini.ttf"
+#define FIRASANS_MEDIUM_FN "FiraSans-Medium-Mini.ttf"
 #define ROBOTO_FN "Roboto-Regular.ttf"
 #define PNGTITLE_FN "title.png"
 #define PNGTITLE_2X_FN "title@2x.png"
