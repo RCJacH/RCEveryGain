@@ -33,6 +33,9 @@ void RCLabel::Draw(IGraphics& g)
 
   if (mStr.GetLength())
   {
+    if (mStyle.drawFrame)
+      g.DrawRect(colors.GetBorderColor(), mRECT, &mBlend, mStyle.frameThickness);
+
     const IText& text = mText.WithFGColor(colors.GetLabelColor());
     const auto str = mStr.Get();
     const int length = mStr.GetLength();
@@ -43,6 +46,12 @@ void RCLabel::Draw(IGraphics& g)
     switch (mDirection)
     {
     case EDirection::Horizontal:
+      if (!mGap)
+      {
+        g.DrawText(text, str, remainingBounds, &mBlend);
+        return;
+      }
+
       remainingBounds.MidHPad((textBounds.W() + (length - 1) * mGap) * .5f);
       for (int i = 0; str[i] != '\0'; i++)
       {
@@ -70,9 +79,6 @@ void RCLabel::Draw(IGraphics& g)
       break;
     }
   }
-
-  if (mStyle.drawFrame)
-    g.DrawRect(colors.GetBorderColor(), mRECT, &mBlend, mStyle.frameThickness);
 }
 
 END_IGRAPHICS_NAMESPACE
