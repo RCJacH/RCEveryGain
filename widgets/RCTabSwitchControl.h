@@ -212,9 +212,8 @@ void RCTabSwitchControl::DrawButtonText(
 {
   if (CStringHasContents(textStr))
   {
-    IBlend blend = !isDisabled && isSelected ? IBlend(EBlend::XOR, .8f) : mBlend;
     const IText& text = mStyle.GetText().WithFGColor(color.GetLabelColor());
-    g.DrawText(text, textStr, r, &blend);
+    g.DrawText(text, textStr, r, &mBlend);
   }
 }
 

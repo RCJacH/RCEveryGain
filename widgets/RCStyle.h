@@ -13,7 +13,7 @@ struct WidgetColorSet
   WidgetColorSet(Color::HSLA color)
     : mainColor(color)
     , borderColor(color.Scaled(0., -.1f, .2f))
-    , labelColor(color.Scaled(0., -.1f, .5f)) {};
+    , labelColor(color.Scaled(0., -.1f, color.mL >= .45f ? -.5f : .5f)) {};
 
   Color::HSLA mainColor;
   Color::HSLA borderColor;
@@ -36,7 +36,8 @@ struct WidgetInteractionColors
     if (isDisabled)
       return;
 
-    const WidgetInteractionColors disabled = WidgetInteractionColors(color.Adjusted(-90, -.3f, -.2f), true);
+    const float add_l = color.mL >= 0.5 ? -.05f : .1f;
+    const WidgetInteractionColors disabled = WidgetInteractionColors(color.Adjusted(-90, -.3f, -add_l), true);
     disabledColors = disabled.normalColors;
     disabledHoverColors = disabled.hoverColors;
     disabledPressColors = disabled.pressColors;
