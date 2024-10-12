@@ -76,15 +76,29 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
           },
           100);
       }));
+
+    // Meter Section
+    const IRECT meter_content = meter.GetHPadded(-8.f).GetReducedFromTop(-8.f);
+    const IRECT meter_input_lane = meter_content.SubRectHorizontal(2, 0).GetReducedFromRight(-8.f);
+    const IRECT meter_output_lane = meter_content.SubRectHorizontal(2, 1).GetReducedFromLeft(-8.f);
+    const IRECT meter_input_label = meter_input_lane.GetFromBottom(24.f);
+    const IRECT meter_output_label = meter_output_lane.GetFromBottom(24.f);
+    const IRECT meter_input = meter_input_lane.GetReducedFromBottom(24.f);
+    const IRECT meter_output = meter_output_lane.GetReducedFromBottom(24.f);
+    const Color::HSLA meter_color = main_color.Scaled(0, -.5f, -.25f);
+    const RCStyle meter_style = main_style.WithColor(meter_color);
+    const RCStyle meter_label_style = header_style.WithColor(GetSectionLabelColor(meter_color));
+
+    AddPanelBG(meter, meter_color);
     const IRECT meter_screens = meter.GetPadded(-4.f - 12.f * 1.5f).GetReducedFromBottom(24.f).GetReducedFromLeft(2.f);
-    const IRECT input_meter = meter_screens.GetReducedFromRight((meter_screens.W() * .5f) - 4.f);
-    const IRECT output_meter = meter_screens.GetReducedFromLeft((meter_screens.W() * .5f) - 4.f);
-    const IVStyle meter_style = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(20.0).WithFGColor(COLOR_WHITE))
-                                  .WithShowLabel(false)
-                                  .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
-                                  .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(input_meter, "Inputs", meter_style), kCtrlTagInputMeter);
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(output_meter, "Outputs", meter_style), kCtrlTagOutputMeter);
+    const IVStyle meter_style_raw = DEFAULT_STYLE.WithLabelText(DEFAULT_LABEL_TEXT.WithSize(20.0).WithFGColor(COLOR_WHITE))
+                                      .WithShowLabel(false)
+                                      .WithValueText(DEFAULT_VALUE_TEXT.WithSize(16.0).WithFGColor(COLOR_WHITE))
+                                      .WithColor(kFG, COLOR_WHITE.WithOpacity(0.3f));
+    pGraphics->AttachControl(new RCLabel(meter_input_label, "INPUTS", EDirection::Horizontal, meter_label_style));
+    pGraphics->AttachControl(new RCLabel(meter_output_label, "OUTPUTS", EDirection::Horizontal, meter_label_style));
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(meter_input, "Inputs", meter_style_raw), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(meter_output, "Outputs", meter_style_raw), kCtrlTagOutputMeter);
 
     // Shift Section
     const IRECT shift_header = shift.GetFromLeft(24.f);
@@ -197,7 +211,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT trim_m_label = trim_m_lane.GetFromRight(24.f);
     const IRECT trim_s_label = trim_s_lane.GetFromRight(24.f);
     const IRECT trim_g_label = trim_g_lane.GetFromRight(24.f);
-    const Color::HSLA trim_color = main_color.Adjusted(60, -.05f, .05f);
+    const Color::HSLA trim_color = main_color.Adjusted(0, -.05f, .05f);
     const RCStyle trim_style = main_style.WithColor(trim_color);
     const RCStyle trim_label_style = header_style.WithColor(GetSectionLabelColor(trim_color));
 
