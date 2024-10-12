@@ -19,9 +19,9 @@ struct WidgetColorSet
   Color::HSLA borderColor;
   Color::HSLA labelColor;
 
-  IColor WidgetColorSet::GetColor() { return mainColor.AsIColor(); }
-  IColor WidgetColorSet::GetBorderColor() { return borderColor.AsIColor(); }
-  IColor WidgetColorSet::GetLabelColor() { return labelColor.AsIColor(); }
+  IColor WidgetColorSet::GetColor() const { return mainColor.AsIColor(); }
+  IColor WidgetColorSet::GetBorderColor() const { return borderColor.AsIColor(); }
+  IColor WidgetColorSet::GetLabelColor() const { return labelColor.AsIColor(); }
 };
 
 struct WidgetInteractionColors
@@ -50,7 +50,7 @@ struct WidgetInteractionColors
   WidgetColorSet disabledHoverColors;
   WidgetColorSet disabledPressColors;
 
-  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false)
+  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false) const
   {
     if (isDisabled)
     {
@@ -85,7 +85,7 @@ struct WidgetColors
     }
   };
 
-  WidgetInteractionColors Get(int index = 0) { return mColors[index % mColorCount]; };
+  WidgetInteractionColors Get(int index = 0) const { return mColors[index % mColorCount]; };
 };
 
 struct RCStyle
@@ -182,7 +182,7 @@ struct RCStyle
 
   IText GetText() const { return valueText; }
 
-  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false, int index = 0) { return mColors.Get(index).GetColors(isHovered, isDown, isDisabled); };
+  WidgetColorSet GetColors(bool isHovered = false, bool isDown = false, bool isDisabled = false, int index = 0) const { return mColors.Get(index).GetColors(isHovered, isDown, isDisabled); };
 };
 
 const RCStyle DEFAULT_RCSTYLE = RCStyle();
