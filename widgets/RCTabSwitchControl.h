@@ -114,6 +114,7 @@ protected:
 RCTabSwitchControl::RCTabSwitchControl(const IRECT& bounds, IActionFunction aF, const std::vector<const char*>& options, const char* label, const RCStyle& style, DirectionType direction)
   : RCSwitchControlBase(bounds, kNoParameter, aF, static_cast<int>(options.size()))
   , mDirectionType(direction)
+  , mStyle(style)
 {
   mDirection = GetDirection();
   mText = style.valueText;
@@ -129,6 +130,7 @@ RCTabSwitchControl::RCTabSwitchControl(const IRECT& bounds, IActionFunction aF, 
 RCTabSwitchControl::RCTabSwitchControl(const IRECT& bounds, int paramIdx, const std::vector<const char*>& options, const char* label, const RCStyle& style, DirectionType direction)
   : RCSwitchControlBase(bounds, paramIdx, nullptr, (int)options.size())
   , mDirectionType(direction)
+  , mStyle(style)
 {
   mDirection = GetDirection();
   mText = style.valueText;
