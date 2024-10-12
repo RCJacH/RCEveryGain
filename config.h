@@ -57,6 +57,8 @@
 #define APP_SIGNAL_VECTOR_SIZE 64
 
 #define ROBOTO_FN "Roboto-Regular.ttf"
+#define PNGTITLE_FN "title.png"
+#define PNGTITLE_2X_FN "title@2x.png"
 #define PNGBACKGROUND_FN "bg.png"
 #define PNGBACKGROUND_2X_FN "bg@2x.png"
 #define PNGSHIFTMACROBUTTONON_FN "shift_macro_button_on.png"

@@ -58,7 +58,21 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT gain = volume.SubRectVertical(2, 0);
     const IRECT trim = volume.SubRectVertical(2, 1);
 
-
+    // TITLE Section
+    const IBitmap titleBitmap = pGraphics->LoadBitmap(PNGTITLE_FN);
+    pGraphics->AttachControl(new IBButtonControl(header.GetReducedFromLeft(24.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {
+      pCaller->SetAnimation(
+        [](IControl* pCaller) {
+          auto progress = pCaller->GetAnimationProgress();
+          if (progress > 1.)
+          {
+            pCaller->OnEndAnimation();
+            return;
+          }
+          pCaller->SetValue(Clip(progress + .5, 0., 1.));
+        },
+        100);
+    }));
     const IRECT meter_screens = meter.GetPadded(-4.f - 12.f * 1.5f).GetReducedFromBottom(24.f).GetReducedFromLeft(2.f);
     const IRECT input_meter = meter_screens.GetReducedFromRight((meter_screens.W() * .5f) - 4.f);
     const IRECT output_meter = meter_screens.GetReducedFromLeft((meter_screens.W() * .5f) - 4.f);
