@@ -436,4 +436,7 @@
       <Filter>config</Filter>
     </None>
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\resources\RCEveryGain.ico" />
+  </ItemGroup>
 </Project>
