@@ -145,7 +145,7 @@ bool RCSliderControlBase::IsFineControl(const IMouseMod& mod, bool wheel) const
   return wheel ? mod.C : mod.R;
   #endif
 #else
-  return (mod.C || mod.S);
+  return mod.S;
 #endif
 }
 
