@@ -5,6 +5,7 @@
 #include "Widgets/RCLabel.h"
 #include "Widgets/RCSlider.h"
 #include "Widgets/RCStyle.h"
+#include "widgets/RCMeterControl.h"
 #include "widgets/RCTabSwitchControl.h"
 
 double shift_sizes[10] = {0.25, 0.5, 0.75, 1., 1.25, 1.5, 1.75, 2., 2.5, 3.};
@@ -94,15 +95,16 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     AddPanelBG(meter, meter_color);
     const IRECT meter_screens = meter.GetPadded(-4.f - 12.f * 1.5f).GetReducedFromBottom(24.f).GetReducedFromLeft(2.f);
     const IVStyle meter_style = DEFAULT_STYLE.WithShowLabel(false)
-                                  .WithValueText(main_style.valueText.WithFGColor(meter_colors.GetLabelColor().WithOpacity(.8f)))
-                                  .WithColor(kX1, meter_colors.GetBorderColor())
-                                  .WithColor(kHL, meter_colors.GetColor().WithOpacity(.5f))
-                                  .WithColor(kFG, meter_colors.GetLabelColor())
-                                  .WithColor(kFR, meter_colors.GetBorderColor());
+                                  .WithValueText(meter_rcstyle.valueText.WithFGColor(meter_rcstyle.GetColors(false, false).GetLabelColor().WithContrast(-.16f)))
+                                  .WithColor(kX1, meter_rcstyle.GetColors().GetLabelColor())
+                                  .WithColor(kX2, meter_rcstyle.GetColors().labelColor.Scaled(0, .8f).WithHue(0).AsIColor())
+                                  .WithColor(kHL, meter_rcstyle.GetColors(false, false, true).GetBorderColor().WithOpacity(.25f))
+                                  .WithColor(kFG, meter_rcstyle.GetColors(false, true).GetLabelColor())
+                                  .WithColor(kFR, meter_rcstyle.GetColors(false, true).GetBorderColor());
     pGraphics->AttachControl(new RCLabel(meter_input_label, "INPUTS", EDirection::Horizontal, meter_label_style));
     pGraphics->AttachControl(new RCLabel(meter_output_label, "OUTPUTS", EDirection::Horizontal, meter_label_style));
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(meter_input, "Inputs", meter_style), kCtrlTagInputMeter);
-    pGraphics->AttachControl(new IVPeakAvgMeterControl<2>(meter_output, "Outputs", meter_style), kCtrlTagOutputMeter);
+    pGraphics->AttachControl(new RCPeakAvgMeterControl<2>(meter_input, meter_style), kCtrlTagInputMeter);
+    pGraphics->AttachControl(new RCPeakAvgMeterControl<2>(meter_output, meter_style), kCtrlTagOutputMeter);
 
     // Shift Section
     const IRECT shift_header = shift.GetFromLeft(24.f);
