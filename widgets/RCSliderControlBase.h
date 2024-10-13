@@ -36,6 +36,7 @@ public:
   void SetGearing(double gearing) { mGearing = gearing; }
   bool IsFineControl(const IMouseMod& mod, bool wheel) const;
   bool IsReset(const IMouseMod& mod) const;
+  bool IsAssign(const IMouseMod& mod) const;
 
 protected:
   bool mHideCursorOnDrag = true;
@@ -80,6 +81,19 @@ void RCSliderControlBase::MouseLClickAction(const IMouseMod& mod)
 {
   if (IsReset(mod))
     SetValueToDefault(GetValIdxForPos(mMouseControl.cur_x, mMouseControl.cur_y));
+  if (IsAssign(mod))
+  {
+    const IParam* pParam = GetParam();
+    double v;
+    if (mDirection == EDirection::Vertical)
+      v = static_cast<double>((mRECT.B - mMouseControl.cur_y) / static_cast<double>(mRECT.H()));
+    else
+      v = static_cast<double>((mMouseControl.cur_x - mRECT.L) / static_cast<double>(mRECT.W()));
+    if (pParam && pParam->GetStepped() && pParam->GetStep() > 0)
+      v = pParam->ConstrainNormalized(v);
+
+    SetValue(v);
+  }
 }
 
 void RCSliderControlBase::OnMouseDblClick(float x, float y, const IMouseMod& mod) { PromptUserInput(GetValIdxForPos(x, y)); }
@@ -156,6 +170,15 @@ bool RCSliderControlBase::IsReset(const IMouseMod& mod) const
   return mod.A;
 #else
   return mod.C;
+#endif
+}
+
+bool RCSliderControlBase::IsAssign(const IMouseMod& mod) const
+{
+#ifdef PROTOOLS
+  return mod & mod.L;
+#else
+  return mod.A;
 #endif
 }
 
