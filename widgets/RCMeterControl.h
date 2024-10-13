@@ -127,6 +127,8 @@ public:
     }
   }
 
+  void DrawTrackBackground(IGraphics& g, const IRECT& r, int chIdx) override { g.FillRect(GetColor(kBG), r); }
+
 protected:
   float mHighRangeDB;
   float mLowRangeDB;
