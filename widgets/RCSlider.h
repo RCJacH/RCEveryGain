@@ -71,7 +71,7 @@ protected:
 };
 
 RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControlBase(bounds, paramIdx, ToEDirection(dir), gearing, 2.0)
+  : RCSliderControlBase(bounds, paramIdx, ToEDirection(dir), gearing, 2.f)
   , mStyle(style)
   , mDirectionType(dir)
 {
@@ -79,7 +79,7 @@ RCSlider::RCSlider(const IRECT& bounds, int paramIdx, const char* label, Directi
 }
 
 RCSlider::RCSlider(const IRECT& bounds, IActionFunction aF, const char* label, DirectionType dir, const RCStyle& style, bool valueIsEditable, double gearing)
-  : RCSliderControlBase(bounds, aF, ToEDirection(dir), gearing, 2.0)
+  : RCSliderControlBase(bounds, aF, ToEDirection(dir), gearing, 2.f)
   , mStyle(style)
   , mDirectionType(dir)
 {
@@ -167,7 +167,7 @@ void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, E
     break;
   }
   IColor textColor = color.GetLabelColor();
-  if (covered && color.GetContrast() < 1.6)
+  if (covered && color.GetContrast() < 1.6f)
     textColor.Contrast(-.5f);
   const IText& text = mStyle.GetText().WithFGColor(textColor);
   g.DrawText(text, mValueStr.Get(), bounds, &mBlend);

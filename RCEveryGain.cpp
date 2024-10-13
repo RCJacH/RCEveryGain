@@ -51,12 +51,12 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // General Layout
     const IRECT content = pGraphics->GetBounds();
-    const IRECT header = content.FracRectVertical(0.382f * 0.382 * 0.618f, true);
-    const IRECT controls = content.FracRectHorizontal(0.618f + 0.382f * 0.382f).GetReducedFromTop(header.H());
+    const IRECT header = content.FracRectVertical(.382f * .382f * .618f, true);
+    const IRECT controls = content.FracRectHorizontal(.618f + .382f * .382f).GetReducedFromTop(header.H());
     const IRECT meter = content.GetReducedFromTop(header.H()).GetReducedFromLeft(controls.W());
-    const IRECT shift = controls.FracRectVertical(0.3f, true);
+    const IRECT shift = controls.FracRectVertical(.3f, true);
     const IRECT lower = controls.GetReducedFromTop(shift.H());
-    const IRECT volume = lower.FracRectHorizontal(0.618f, true);
+    const IRECT volume = lower.FracRectHorizontal(.618f, true);
     const IRECT fader = lower.GetReducedFromRight(volume.W());
     const IRECT gain = volume.SubRectVertical(2, 0);
     const IRECT trim = volume.SubRectVertical(2, 1);
@@ -64,19 +64,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     // TITLE Section
     const IBitmap titleBitmap = pGraphics->LoadBitmap(PNGTITLE_FN);
     pGraphics->AttachControl(
-      new IBButtonControl(header.GetReducedFromLeft(24.f).GetReducedFromTop(8.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {
-        pCaller->SetAnimation(
-          [](IControl* pCaller) {
-            auto progress = pCaller->GetAnimationProgress();
-            if (progress > 1.)
-            {
-              pCaller->OnEndAnimation();
-              return;
-            }
-            pCaller->SetValue(Clip(progress + .5, 0., 1.));
-          },
-          100);
-      }));
+      new IBButtonControl(header.GetReducedFromLeft(24.f).GetReducedFromTop(8.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {}));
 
     // Meter Section
     const IRECT meter_content = meter.GetHPadded(-16.f).GetReducedFromTop(8.f);

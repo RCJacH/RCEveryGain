@@ -88,6 +88,7 @@ protected:
     case DirectionType::VerticalFilled:
       return EDirection::Vertical;
     }
+    return EDirection::Horizontal;
   };
   bool IsFilled() const
   {
@@ -100,6 +101,7 @@ protected:
     case DirectionType::VerticalFilled:
       return true;
     }
+    return false;
   };
 
   DirectionType mDirectionType;
