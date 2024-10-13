@@ -37,7 +37,6 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
   mLayoutFunc = [&](IGraphics* pGraphics) {
     pGraphics->AttachCornerResizer(EUIResizerMode::Scale, false);
-    pGraphics->LoadFont("Roboto-Regular", ROBOTO_FN);
     pGraphics->LoadFont("FiraSans-Regular", FIRASANS_REGULAR_FN);
     pGraphics->LoadFont("FiraSans-Medium", FIRASANS_MEDIUM_FN);
     const Color::HSLA main_color = Color::HSLA(213, .36f, .32f);
