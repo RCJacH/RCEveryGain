@@ -58,7 +58,7 @@ public:
   virtual void DrawWidget(IGraphics& g, WidgetColorSet color);
   virtual void DrawBorder(IGraphics& g, WidgetColorSet color, IRECT bounds, float borderWidth);
   virtual void DrawHandle(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct);
-  virtual void DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct);
+  virtual void DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct, bool covered);
 
   void OnResize() override;
   void SetDirty(bool push, int valIdx = kNoValIdx) override;
@@ -100,6 +100,7 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColorSet color)
   IRECT handleBounds;
   IRECT textBounds;
   EDirection fracDirection;
+  bool covered = false;
   const double pct = GetValue();
   switch (mDirectionType)
   {
@@ -108,6 +109,7 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColorSet color)
     fracDirection = (mDirectionType == DirectionType::Horizontal) ? EDirection::Horizontal : EDirection::Vertical;
     valueBounds = contentBounds.FracRect(fracDirection, pct);
     handleBounds = valueBounds.FracRect(fracDirection, 0.f, true);
+    covered = pct > .5;
     break;
   case DirectionType::HorizontalSplit:
   case DirectionType::VerticalSplit:
@@ -120,7 +122,7 @@ void RCSlider::DrawWidget(IGraphics& g, WidgetColorSet color)
   DrawBorder(g, color, mRECT, borderWidth);
   g.FillRect(color.GetColor(), valueBounds, &mBlend);
   DrawHandle(g, color, handleBounds, fracDirection, pct);
-  DrawValueText(g, color, contentBounds, fracDirection, pct);
+  DrawValueText(g, color, contentBounds, fracDirection, pct, covered);
 }
 
 void RCSlider::DrawBorder(IGraphics& g, WidgetColorSet color, IRECT bounds, float borderWidth)
@@ -150,7 +152,7 @@ void RCSlider::DrawHandle(IGraphics& g, WidgetColorSet color, IRECT bounds, EDir
   g.FillRect(color.GetBorderColor(), bounds, &mBlend);
 }
 
-void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct)
+void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, EDirection dir, double pct, bool covered)
 {
   if (!mStyle.showValue)
     return;
@@ -164,7 +166,10 @@ void RCSlider::DrawValueText(IGraphics& g, WidgetColorSet color, IRECT bounds, E
     bounds = bounds.FracRectVertical(.5f, pct < .5);
     break;
   }
-  const IText& text = mStyle.GetText().WithFGColor(color.GetLabelColor());
+  IColor textColor = color.GetLabelColor();
+  if (covered && color.GetContrast() < 1.6)
+    textColor.Contrast(-.5f);
+  const IText& text = mStyle.GetText().WithFGColor(textColor);
   g.DrawText(text, mValueStr.Get(), bounds, &mBlend);
 }
 

@@ -13,15 +13,16 @@ struct WidgetColorSet
   WidgetColorSet(Color::HSLA color)
     : mainColor(color)
     , borderColor(color.Scaled(0., -.1f, .2f))
-    , labelColor(color.Scaled(0., -.1f, color.mL >= .5f ? -.5f : .5f)) {};
+    , labelColor(color.Scaled(0., -.1f, .5f)) {};
 
   Color::HSLA mainColor;
   Color::HSLA borderColor;
   Color::HSLA labelColor;
 
-  IColor WidgetColorSet::GetColor() const { return mainColor.AsIColor(); }
-  IColor WidgetColorSet::GetBorderColor() const { return borderColor.AsIColor(); }
-  IColor WidgetColorSet::GetLabelColor() const { return labelColor.AsIColor(); }
+  float GetContrast() const { return (labelColor.mL + 0.05) / (mainColor.mL + 0.05); }
+  IColor GetColor() const { return mainColor.AsIColor(); }
+  IColor GetBorderColor() const { return borderColor.AsIColor(); }
+  IColor GetLabelColor() const { return labelColor.AsIColor(); }
 };
 
 struct WidgetInteractionColors
