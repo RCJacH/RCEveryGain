@@ -35,6 +35,7 @@ public:
 
   void SetGearing(double gearing) { mGearing = gearing; }
   bool IsFineControl(const IMouseMod& mod, bool wheel) const;
+  bool IsReset(const IMouseMod& mod) const;
 
 protected:
   bool mHideCursorOnDrag = true;
@@ -77,7 +78,7 @@ void RCSliderControlBase::MouseLPressAction(const IMouseMod& mod) { mMouseLDownV
 
 void RCSliderControlBase::MouseLClickAction(const IMouseMod& mod)
 {
-  if (mod.C)
+  if (IsReset(mod))
     SetValueToDefault(GetValIdxForPos(mMouseControl.cur_x, mMouseControl.cur_y));
 }
 
@@ -146,6 +147,15 @@ bool RCSliderControlBase::IsFineControl(const IMouseMod& mod, bool wheel) const
   #endif
 #else
   return mod.S;
+#endif
+}
+
+bool RCSliderControlBase::IsReset(const IMouseMod& mod) const
+{
+#ifdef PROTOOLS
+  return mod.A;
+#else
+  return mod.C;
 #endif
 }
 
