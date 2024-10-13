@@ -53,7 +53,11 @@ struct MouseButtonStatus
       if (isHovering)
         status = Status::Clicked;
       else
-        status = Status::Released;
+        Release();
+      break;
+    case 3:
+      if (x != press_x || y != press_y)
+        status = Status::Dragging;
       break;
     };
   };
@@ -67,9 +71,10 @@ struct MouseButtonStatus
         return 1;
       break;
     case Status::Pressing:
-    case Status::Dragging:
       if (!isOn)
         return 2;
+      else
+        return 3;
     }
     return 0;
   };
@@ -118,6 +123,9 @@ struct MouseControl
     lmb.SetStatus(cur_x, cur_y, isHovering, mod.L);
     rmb.SetStatus(cur_x, cur_y, isHovering, mod.R);
   };
+
+  void SetLDragging() { lmb.status = MouseButtonStatus::Status::Dragging; }
+  void SetRDragging() { rmb.status = MouseButtonStatus::Status::Dragging; }
 
   void UpdatePosition(float x, float y)
   {
@@ -213,7 +221,15 @@ void RCControl::OnMouseUp(float x, float y, const IMouseMod& mod)
     MouseRClickAction(mod);
     mMouseControl.ReleaseR();
   }
-  SetDirty(false);
+  if (mMouseControl.IsLDragging())
+  {
+    mMouseControl.ReleaseL();
+  }
+  if (mMouseControl.IsRDragging())
+  {
+    mMouseControl.ReleaseR();
+  }
+  SetDirty(true);
   mMouseControl.SetHovering(mRECT.Contains(x, y));
 }
 
@@ -221,10 +237,16 @@ void RCControl::OnMouseDrag(float x, float y, float dX, float dY, const IMouseMo
 {
   mMouseControl.UpdatePosition(x, y);
   MouseDragAction(mod);
-  if (mMouseControl.IsLPressing())
+  if (mMouseControl.IsLPressing() || mMouseControl.IsLDragging())
+  {
     MouseLDragAction(dX, dY, mod);
-  if (mMouseControl.IsRPressing())
+    mMouseControl.SetLDragging();
+  }
+  if (mMouseControl.IsRPressing() || mMouseControl.IsRDragging())
+  {
     MouseRDragAction(dX, dY, mod);
+    mMouseControl.SetRDragging();
+  }
   SetDirty(true);
 }
 
