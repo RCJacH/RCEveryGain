@@ -70,6 +70,7 @@ public:
   void OnMouseUp(float x, float y, const IMouseMod& mod) override;
   void OnResize() override;
   virtual bool IsHit(float x, float y) const override;
+  void CreateContextMenu(IPopupMenu& contextMenu) override;
 
   /** returns the label string on the selected tab */
   const char* GetSelectedLabelStr() const;
@@ -260,6 +261,7 @@ void RCTabSwitchControl::OnMouseUp(float x, float y, const IMouseMod& mod)
   SetDirty(true);
 }
 
+void RCTabSwitchControl::CreateContextMenu(IPopupMenu& contextMenu) { mMousePressButton = -1; }
 
 void RCTabSwitchControl::OnResize()
 {
