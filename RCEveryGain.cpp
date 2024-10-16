@@ -84,10 +84,10 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IVStyle meter_style = DEFAULT_STYLE.WithShowLabel(false)
                                   .WithValueText(meter_rcstyle.valueText.WithFGColor(meter_rcstyle.GetColors(false, false).GetLabelColor().WithContrast(-.16f)))
                                   .WithColor(kX1, meter_rcstyle.GetColors().GetLabelColor())
-                                  .WithColor(kX2, meter_rcstyle.GetColors().labelColor.Scaled(0, .8f).WithHue(0).AsIColor())
+                                  .WithColor(kX2, meter_rcstyle.GetColors().mLabelColor.Scaled(0, .8f).WithHue(0).AsIColor())
                                   .WithColor(kHL, meter_rcstyle.GetColors(false, false, true).GetBorderColor().WithOpacity(.25f))
                                   .WithColor(kFG, meter_rcstyle.GetColors(false, true).GetLabelColor())
-                                  .WithColor(kBG, meter_rcstyle.GetColors().mainColor.Scaled(0, -.5f, -.5f).AsIColor())
+                                  .WithColor(kBG, meter_rcstyle.GetColors().mMainColor.Scaled(0, -.5f, -.5f).AsIColor())
                                   .WithColor(kFR, meter_rcstyle.GetColors(false, true).GetBorderColor());
     pGraphics->AttachControl(new RCLabel(meter_input_label, "INPUTS", EDirection::Horizontal, meter_label_style));
     pGraphics->AttachControl(new RCLabel(meter_output_label, "OUTPUTS", EDirection::Horizontal, meter_label_style));

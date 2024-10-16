@@ -11,18 +11,18 @@ struct WidgetColorSet
   WidgetColorSet() {};
 
   WidgetColorSet(Color::HSLA color)
-    : mainColor(color)
-    , borderColor(color.Scaled(0.f, -.1f, .2f))
-    , labelColor(color.Scaled(0.f, -.1f, .5f)) {};
+    : mMainColor(color)
+    , mBorderColor(color.Scaled(0.f, -.1f, .2f))
+    , mLabelColor(color.Scaled(0.f, -.1f, .5f)) {};
 
-  Color::HSLA mainColor;
-  Color::HSLA borderColor;
-  Color::HSLA labelColor;
+  Color::HSLA mMainColor;
+  Color::HSLA mBorderColor;
+  Color::HSLA mLabelColor;
 
-  float GetContrast() const { return (labelColor.mL + .05f) / (mainColor.mL + .05f); }
-  IColor GetColor() const { return mainColor.AsIColor(); }
-  IColor GetBorderColor() const { return borderColor.AsIColor(); }
-  IColor GetLabelColor() const { return labelColor.AsIColor(); }
+  float GetContrast() const { return (mLabelColor.mL + .05f) / (mMainColor.mL + .05f); }
+  IColor GetColor() const { return mMainColor.AsIColor(); }
+  IColor GetBorderColor() const { return mBorderColor.AsIColor(); }
+  IColor GetLabelColor() const { return mLabelColor.AsIColor(); }
 };
 
 struct WidgetInteractionColors
