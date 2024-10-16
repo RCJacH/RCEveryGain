@@ -43,10 +43,10 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const RCStyle main_style = DEFAULT_RCSTYLE.WithColor(main_color).WithValueTextSize(18.f).WithValueTextFont("FiraSans-Regular");
     const Color::HSLA header_color = main_color.Scaled(0, -.8f, .3f);
     const RCStyle header_style = main_style.WithColor(header_color).WithDrawFrame(false).WithValueTextSize(16.f).WithValueTextFont("FiraSans-Medium");
-    pGraphics->AttachPanelBackground(main_color.Scaled(0, -.3f).AsIColor());
+    pGraphics->AttachPanelBackground(main_color.Scaled(0, -.382f, -.1f).AsIColor());
 
-    auto AddPanelBG = [&](const IRECT bounds, const Color::HSLA color) { pGraphics->AttachControl(new IPanelControl(bounds, color.Scaled(0, -.6f, -.3f).AsIColor())); };
-    auto GetSectionColor = [&](int dHue) { return main_color.Adjusted(dHue, 0.f, .15f); };
+    auto AddPanelBG = [&](const IRECT bounds, const Color::HSLA color) { pGraphics->AttachControl(new IPanelControl(bounds, color.Scaled(0, -.25f, -.35f).AsIColor())); };
+    auto GetSectionColor = [&](int dHue) { return main_color.Adjusted(dHue, 0.f, .2f); };
     auto GetSectionLabelColor = [&](const Color::HSLA color) { return color.Scaled(0, -.8f, .6f); };
 
     // General Layout
@@ -109,8 +109,9 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_bulbs_macro = shift_control_macro.GetHPadded(-shift_control_macro.H());
     const IRECT shift_macro_minus_button = shift_control_macro.GetFromLeft(shift_control_macro.H());
     const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
-    const Color::HSLA shift_color = GetSectionColor(120);
+    const Color::HSLA shift_color = GetSectionColor(100);
     const RCStyle shift_style = main_style.WithColor(shift_color);
+    const RCStyle shift_size_style = main_style.WithColor(GetSectionColor(135).Scaled(0.f, -.1f, -.1f));
     const RCStyle shift_header_style = header_style.WithColor(GetSectionLabelColor(shift_color));
     const RCStyle shift_label_style = shift_header_style.WithValueTextHAlign(EAlign::Near);
 
@@ -122,15 +123,15 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new RCLabel(shift_label_size, "SIZE", EDirection::Horizontal, shift_label_style));
     pGraphics->AttachControl(new RCSlider(shift_control_macro, kShiftMacro, "", RCSlider::HorizontalSplit, shift_style));
     pGraphics->AttachControl(new RCSlider(shift_control_micro, kShiftMicro, "", RCSlider::HorizontalSplit, shift_style));
-    pGraphics->AttachControl(new RCTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_style.WithValueTextFont("FiraSans-Medium")));
+    pGraphics->AttachControl(new RCTabSwitchControl(shift_control_size, kShiftSize, {}, "", shift_size_style.WithValueTextFont("FiraSans-Medium")));
 
     // Fader Section
     const IRECT fader_header = fader.GetFromLeft(24.f);
     const IRECT fader_inner = fader.GetReducedFromLeft(24.f).GetVPadded(-2.f).GetReducedFromTop(8.f).GetReducedFromRight(8.f);
-    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.382f, true);
-    const IRECT fader_fader_lane = fader_inner.GetReducedFromRight(fader_non_fader.W() + 2.f);
-    const IRECT fader_curve_lane = fader_non_fader.GetReducedFromLeft(2.f).SubRectVertical(2, 0);
-    const IRECT fader_smooth_lane = fader_non_fader.GetReducedFromLeft(2.f).SubRectVertical(2, 1);
+    const IRECT fader_non_fader = fader_inner.FracRectHorizontal(.382f, false);
+    const IRECT fader_fader_lane = fader_inner.GetReducedFromLeft(fader_non_fader.W() + 2.f);
+    const IRECT fader_curve_lane = fader_non_fader.GetReducedFromRight(2.f).SubRectVertical(2, 0);
+    const IRECT fader_smooth_lane = fader_non_fader.GetReducedFromRight(2.f).SubRectVertical(2, 1);
     const IRECT fader_fader_label = fader_fader_lane.GetFromBottom(24.f);
     const IRECT fader_curve_label = fader_curve_lane.GetFromBottom(24.f);
     const IRECT fader_smooth_label = fader_smooth_lane.GetFromBottom(24.f);
@@ -139,6 +140,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT fader_smooth_control = fader_smooth_lane.GetReducedFromBottom(24.f);
     const Color::HSLA fader_color = GetSectionColor(-80);
     const RCStyle fader_style = main_style.WithColor(fader_color);
+    const RCStyle fader_volume_style = main_style.WithColor(GetSectionColor(-35));
     const RCStyle fader_label_style = header_style.WithColor(GetSectionLabelColor(fader_color));
 
     AddPanelBG(fader, fader_color);
@@ -146,7 +148,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     pGraphics->AttachControl(new RCLabel(fader_fader_label, "VOLUME", EDirection::Horizontal, fader_label_style));
     pGraphics->AttachControl(new RCLabel(fader_curve_label, "CURVE", EDirection::Horizontal, fader_label_style));
     pGraphics->AttachControl(new RCLabel(fader_smooth_label, "SMOOTH", EDirection::Horizontal, fader_label_style));
-    pGraphics->AttachControl(new RCSlider(fader_fader_control, kFader, "", RCSlider::Vertical, fader_style));
+    pGraphics->AttachControl(new RCSlider(fader_fader_control, kFader, "", RCSlider::Vertical, fader_volume_style));
     pGraphics->AttachControl(new RCSlider(fader_curve_control, kFaderCurve, "", RCSlider::Vertical, fader_style));
     pGraphics->AttachControl(new RCSlider(fader_smooth_control, kFaderSmoothing, "", RCSlider::Vertical, fader_style));
 
@@ -169,7 +171,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT gain_m_label = gain_m_lane.GetFromLeft(24.f);
     const IRECT gain_s_label = gain_s_lane.GetFromLeft(24.f);
     const IRECT gain_g_label = gain_g_lane.GetFromLeft(24.f);
-    const Color::HSLA gain_color = GetSectionColor(160);
+    const Color::HSLA gain_color = GetSectionColor(170);
     const RCStyle gain_style = main_style.WithColor(gain_color);
     const RCStyle gain_label_style = header_style.WithColor(GetSectionLabelColor(gain_color));
 
