@@ -21,11 +21,11 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
   GetParam(kFader)->InitDouble("Fader", 100., 0., 100.0, 0.0001, "%");
   GetParam(kFaderCurve)->InitDouble("Fader Curve", 2., 0., 10.0, 0.1, "");
   GetParam(kFaderSmoothing)->InitDouble("Fader Smoothing", 2., 0., 10.0, 0.1, "");
-  GetParam(kGainMaster)->InitDouble("Master Gain", 0., -12., 12.0, 0.1, "dB");
-  GetParam(kGainLeft)->InitDouble("Left Gain", 0., -12., 12.0, 0.1, "dB");
-  GetParam(kGainRight)->InitDouble("Right Gain", 0., -12., 12.0, 0.1, "dB");
-  GetParam(kGainMid)->InitDouble("Mid Gain", 0., -12., 12.0, 0.1, "dB");
-  GetParam(kGainSide)->InitDouble("Side Gain", 0., -12., 12.0, 0.1, "dB");
+  GetParam(kGainMaster)->InitDouble("Master Gain", 0., -24., 24.0, 0.1, "dB");
+  GetParam(kGainLeft)->InitDouble("Left Gain", 0., -24., 24.0, 0.1, "dB");
+  GetParam(kGainRight)->InitDouble("Right Gain", 0., -24., 24.0, 0.1, "dB");
+  GetParam(kGainMid)->InitDouble("Mid Gain", 0., -24., 24.0, 0.1, "dB");
+  GetParam(kGainSide)->InitDouble("Side Gain", 0., -24., 24.0, 0.1, "dB");
   GetParam(kTrimMaster)->InitDouble("Master Trim", 0., -6., 6.0, 0.000001, "dB");
   GetParam(kTrimLeft)->InitDouble("Left Trim", 0., -6., 6.0, 0.000001, "dB");
   GetParam(kTrimRight)->InitDouble("Right Trim", 0., -6., 6.0, 0.000001, "dB");
@@ -111,7 +111,7 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
     const IRECT shift_macro_plus_button = shift_control_macro.GetFromRight(shift_control_macro.H());
     const Color::HSLA shift_color = GetSectionColor(100);
     const RCStyle shift_style = main_style.WithColor(shift_color);
-    const RCStyle shift_size_style = main_style.WithColor(GetSectionColor(135).Scaled(0.f, -.1f, -.1f));
+    const RCStyle shift_size_style = main_style.WithColor(GetSectionColor(135).Scaled(0.f, -.1f, -.15f));
     const RCStyle shift_header_style = header_style.WithColor(GetSectionLabelColor(shift_color));
     const RCStyle shift_label_style = shift_header_style.WithValueTextHAlign(EAlign::Near);
 
