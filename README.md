@@ -7,8 +7,6 @@
 This audio plugin offers multiple methods of gain control for stereo tracks. Designed for both fine-tuning and broad adjustments.
 The plugin features five sections: Shift, Fader, Gain, Trim, and Meter.
 
-<div style="page-break-after: always;"></div>
-
 ## Disclaimer
 
 This plugin is delivered as is, with no guarantees for future updates or support.
@@ -19,13 +17,10 @@ Feedback is welcomed, but there are no promises for feature requests or changes.
 
 This plugin is portable and requires no installation. To set it up, simply drag the files to their corresponding plugin directories:
 
-- **AAX**: Place the `RCEveryGain.aax` in the Avid/Audio/Plug-Ins folder.
 - **CLAP**: Place the `RCEveryGain.clap` in the CLAP plugin folder (e.g., `C:\Program Files\Common Files\CLAP` on Windows or `~/Library/Audio/Plug-Ins/CLAP` on macOS).
 - **VST3**: Place the `RCEveryGain.vst3` in the VST3 folder (e.g., `C:\Program Files\Common Files\VST3` on Windows or `~/Library/Audio/Plug-Ins/VST3` on macOS).
 
 After copying the files, restart or refresh your DAW to ensure it recognizes the new plugin formats.
-
-<div style="page-break-after: always;"></div>
 
 ## Shift Section
 
@@ -33,13 +28,13 @@ After copying the files, restart or refresh your DAW to ensure it recognizes the
 
 The Shift section allows you to adjust the gain using "bits," which are predefined factor of multiplication or division.
 By default, a single bit shift either doubles or halves the gain, equivalent to roughly ±6 dB.
-Changing the Ratio setting modifies the impact of each shift, allowing for more gradual or larger gain adjustments.
+Changing the Size setting modifies the impact of each shift, allowing for more gradual or larger gain adjustments.
 
 - **MAJOR**: Adjusts gain in whole bit steps, ranging from -8 to 8. Positive values increase gain, while negative values decrease it.
 
 - **MINOR**: Provides fine-tuning within a single bit shift, ranging from -100% to 100% for precise adjustments between whole steps.
 
-- **RATIO**: Determines the factor by which each bit shift changes the gain. For example, a Ratio of 0.5 makes each Major shift half as impactful, requiring two Major shifts to achieve the original gain change of one Major shift at a Ratio of 1.0.
+- **SIZE**: Determines the size of each bit, the factor by which each bit shift changes the gain. For example, a size of 0.5 makes each Major shift half as impactful, requiring two Major shifts to achieve the original gain change of one Major shift at a Size of 1.0.
 
 These controls are ideal for driving saturation plugins; placing a +1 before and a -1 after increases input drive without altering the final output gain.
 
@@ -58,8 +53,6 @@ The Fader section allows you to adjust the gain using percentage-based controls.
 - **SMOOTHING**: Controls the rate at which volume changes occur. This setting adjusts the speed or time window over which the volume transitions take place, ensuring smooth adjustments without abrupt jumps in loudness.
 
 This section is often used for constant riding and fade-ins/fade-outs mid or post effects.
-
-<div style="page-break-after: always;"></div>
 
 ## Gain and Trim Sections
 
