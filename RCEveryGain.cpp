@@ -63,8 +63,13 @@ RCEveryGain::RCEveryGain(const InstanceInfo& info)
 
     // TITLE Section
     const IBitmap titleBitmap = pGraphics->LoadBitmap(PNGTITLE_FN);
-    pGraphics->AttachControl(
-      new IBButtonControl(header.GetReducedFromLeft(24.f).GetReducedFromTop(8.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H()), titleBitmap, [](IControl* pCaller) {}));
+    const IRECT title_rect = header.GetReducedFromLeft(24.f).GetReducedFromTop(8.f).GetFromLeft(titleBitmap.W()).GetMidVPadded(titleBitmap.H());
+    pGraphics->AttachControl(new IBButtonControl(title_rect, titleBitmap, [](IControl* pCaller) {}));
+    const IRECT version_rect = header.GetReducedFromLeft(24.f + titleBitmap.W()).GetReducedFromTop(10.f).GetFromLeft(48.f);
+    WDL_String version_str;
+    GetPluginVersionStr(version_str);
+    const char* cString = version_str.Get();
+    pGraphics->AttachControl(new RCLabel(version_rect, cString, EDirection::Horizontal, header_style, 0.0f));
 
     // Meter Section
     const IRECT meter_content = meter.GetHPadded(-16.f).GetReducedFromTop(8.f);
