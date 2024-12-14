@@ -1,5 +1,8 @@
 # RCEveryGain
 
+## Watch The Accompanied Youtube Video
+[![Youtube Video](https://i9.ytimg.com/vi/_uJvYdIiWHs/mqdefault.jpg?v=674af9e9&sqp=CMCb9boG&rs=AOn4CLBYwZckZwU_XHiLgxUlLPQZIU-S7w)](https://www.youtube.com/watch?v=_uJvYdIiWHs)
+
 ## Introduction
 
 ![RCEveryGain ScreenShot](manual/RCEveryGain.png)
